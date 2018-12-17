@@ -177,7 +177,7 @@ class ReLU(object):
 
     def backward(self, grad):
         tmp = np.where(self.input > 0, self.input, 0.0)
-        activation_derivative = np.where(tmp <= 0, self.input, 1.0)
+        activation_derivative = np.where(tmp <= 0, tmp, 1.0)
         return grad * activation_derivative
 
 
@@ -213,8 +213,8 @@ class BatchNorm1d(object):
         self.beta = np.zeros(shape=[1, n_in])
 
     def forward(self, input):
-        self.batch_size = input.shape[0]
         self.input = input
+        self.batch_size = self.input.shape[0]
         self.mu = np.mean(self.input, axis=0)
         self.var = np.var(self.input, axis=0)
         self.normalized = (self.input - self.mu) / np.sqrt(self.var + 1e-8)

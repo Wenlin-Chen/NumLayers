@@ -1,7 +1,7 @@
 from model import Layers, load_data, network
 
 # hyper-parameters
-learning_rate = 0.01
+learning_rate = 0.03
 num_iter = 10000
 batch_size = 128
 lr_decay = None
