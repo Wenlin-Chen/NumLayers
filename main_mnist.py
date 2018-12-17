@@ -1,13 +1,13 @@
-from model import Layers, load_data
-from model.network import Network
+from model import Layers, load_data, network
 
 # hyper-parameters
 learning_rate = 0.1
 num_iter = 10000
 batch_size = 128
+lr_decay = [0.2, 6000]
 
 # network
-net = Network(learning_rate=learning_rate, num_iter=num_iter, batch_size=batch_size, lr_decay=[0.2, 6000])
+net = network.Network(learning_rate=learning_rate, num_iter=num_iter, batch_size=batch_size, lr_decay=lr_decay)
 
 # layers
 net.add_layer(Layers.Linear(n_in=28 * 28 * 1, n_out=1024))
