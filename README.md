@@ -1,4 +1,4 @@
-NumLayers 0.3.2
+NumLayers 0.3.3
 ====
 
 A Deep Learning Library Written in NumPy

@@ -1,4 +1,4 @@
-from model import Layers, load_data, network
+from model import Layers, Activations, Losses, load_data, network
 
 # hyper-parameters
 learning_rate = 0.2
@@ -12,10 +12,10 @@ net = network.Network(learning_rate=learning_rate, num_iter=num_iter, batch_size
 # layers
 net.add_layer(Layers.Linear(n_in=28 * 28 * 1, n_out=1024))
 net.add_layer(Layers.BatchNorm1d(n_in=1024))
-net.add_layer(Layers.ReLU())
+net.add_layer(Activations.ReLU())
 net.add_layer(Layers.Dropout(keep_prob=0.5))
 net.add_layer(Layers.Linear(n_in=1024, n_out=10))
-net.add_layer(Layers.CrossEntropyLoss())
+net.add_layer(Losses.CrossEntropyLoss())
 
 # data
 train, val, test = load_data.load_mnist()
