@@ -1,4 +1,4 @@
-NumLayers 0.3.1
+NumLayers 0.3.2
 ====
 
 A Deep Learning Library Written in NumPy
@@ -17,16 +17,17 @@ Features
 Layers<br>
 - Linear<br>
 - Dropout<br>
-- Batch Normalization 1D<br><br>
+- Batch Normalization 1D<br>
 
 Losses<br>
 - Cross Entropy Loss<br>
-- Mean Square Error Loss<br><br>
+- Hinge Loss<br>
+- Mean Square Error Loss<br>
 
 Activation Functions<br> 
 - ReLU<br>
 - Tanh<br>
-- Sigmoid<br><br>
+- Sigmoid<br>
 
 Training Tools<br>
 - Learning Rate Decay<br><br>
@@ -34,8 +35,10 @@ Training Tools<br>
 
 Datasets
 ----
-- MNIST dataset from http://yann.lecun.com/exdb/mnist/ <br>
-- CIFAR10 dataset from https://www.cs.toronto.edu/~kriz/cifar.html <br><br>
+- MNIST<br>
+http://yann.lecun.com/exdb/mnist/ <br>
+- CIFAR10<br>
+https://www.cs.toronto.edu/~kriz/cifar.html <br><br>
 
 Training Curves
 ----
