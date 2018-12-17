@@ -1,4 +1,4 @@
-NumLayers 0.3.0
+NumLayers 0.3.1
 ====
 
 A Deep Learning Library Written in NumPy
@@ -9,7 +9,7 @@ A Deep Learning Library Written in NumPy
 
 Requirements
 ----
-- Python 3<br>
+- Python 3.x<br>
 - NumPy<br><br>
 
 Features
@@ -20,7 +20,8 @@ Layers<br>
 - Batch Normalization 1D<br><br>
 
 Losses<br>
-- Cross Entropy Loss<br><br>
+- Cross Entropy Loss<br>
+- Mean Square Error Loss<br><br>
 
 Activation Functions<br> 
 - ReLU<br>

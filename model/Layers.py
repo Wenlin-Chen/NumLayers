@@ -16,7 +16,7 @@ class CrossEntropyLoss(object):
         exp_score = np.exp(input - np.max(input, axis=1).reshape(-1, 1))
         normalization = np.sum(exp_score, axis=1).reshape(-1, 1)
         self.p = exp_score / normalization
-        loss = - 1 / self.batch_size * np.sum(np.log(self.p[range(self.batch_size), self.y] + 1e-8))
+        loss = - np.sum(np.log(self.p[range(self.batch_size), self.y] + 1e-8)) / self.batch_size
         return loss
 
     def score(self, input, y):
@@ -29,7 +29,30 @@ class CrossEntropyLoss(object):
     def backward(self):
         p = self.p
         p[range(self.batch_size), self.y] -= 1
-        return 1 / self.batch_size * (p + (1e-8))
+        return (p + 1e-8) / self.batch_size
+
+
+class MSELoss(object):
+
+    def __init__(self):
+        self.layer = 'loss'
+        self.input = None
+        self.batch_size = None
+        self.y = None
+
+    def forward(self, input, labels):
+        self.y = labels
+        self.input = input
+        self.batch_size = self.input.shape[0]
+        loss = 0.5 * np.linalg.norm(input - labels) / self.batch_size
+        return loss
+
+    def score(self, input, y):
+        return 0.5 * np.linalg.norm(input - y) / self.batch_size
+
+    def backward(self):
+        return (self.input - self.y) / self.batch_size
+
 
 
 class Linear(object):
