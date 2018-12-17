@@ -1,7 +1,6 @@
 import time
 import matplotlib.pyplot as plt
 import numpy as np
-from model import Layers
 
 
 class Network(object):
@@ -22,12 +21,12 @@ class Network(object):
     def add_layer(self, layer):
         self.layers.append(layer)
 
-    def forward(self, x, label):
+    def forward(self, x, labels):
         temp = x
         loss = None
         for layer in self.layers:
-            if type(layer) == Layers.Softmax:
-                loss = layer.forward(input=temp, label=label)
+            if layer.layer == 'loss':
+                loss = layer.forward(input=temp, labels=labels)
             else:
                 temp = layer.forward(input=temp)
         return loss
@@ -35,16 +34,18 @@ class Network(object):
     def backward(self):
         temp = None
         for layer in reversed(self.layers):
-            if type(layer) == Layers.Softmax:
-                temp = layer.backward(learning_rate=self.lr)
+            if layer.layer == 'loss':
+                temp = layer.backward()
+            elif layer.layer == 'linear' or layer.layer == 'batch_norm':
+                temp = layer.backward(grad=temp, learning_rate=self.lr)
             else:
-                temp = layer.backward(forward_delta=temp, learning_rate=self.lr)
+                temp = layer.backward(grad=temp)
 
     def score(self, x, y):
         temp = x
         acc = None
         for layer in self.layers:
-            if type(layer) == Layers.Softmax:
+            if layer.layer == 'loss':
                 acc = layer.score(input=temp, y=y)
             else:
                 temp = layer.score(input=temp)

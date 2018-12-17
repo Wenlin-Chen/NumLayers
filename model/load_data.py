@@ -11,7 +11,7 @@ def load_mnist(root='./data/mnist'):
         train, val, test = pickle.load(f)
     else:
         train, val, test = pickle.load(f, encoding='latin1')
-    train_data, val_data, test_data = train[0] / 255, val[0] / 255, test[0] / 255
+    train_data, val_data, test_data = train[0].reshape(-1, 1, 28, 28) / 255, val[0].reshape(-1, 1, 28, 28) / 255, test[0].reshape(-1, 1, 28, 28) / 255
     train_labels, val_labels, test_labels = train[1], val[1], test[1]
 
     return (train_data, train_labels), (val_data, val_labels), (test_data, test_labels)
