@@ -32,6 +32,37 @@ class CrossEntropyLoss(object):
         return (p + 1e-8) / self.batch_size
 
 
+class HingeLoss(object):
+
+    def __init__(self):
+        self.layer = 'loss'
+        self.batch_size = None
+        self.y = None
+        self.margin = None
+
+    def forward(self, input, labels):
+        self.y = labels
+        self.batch_size = input.shape[0]
+
+        correct_scores = input[range(self.batch_size), list(self.y)].reshape(-1, 1)
+        self.margin = input - correct_scores + 1
+        self.margin[self.margin < 0] = 0
+        self.margin[range(self.batch_size), list(self.y)] = 0
+        loss = np.sum(self.margin) / self.batch_size
+        return loss
+
+    def score(self, input, y):
+        y_pred = np.argmax(input, axis=1)
+        return np.mean(y == y_pred)
+
+    def backward(self):
+        grad = np.zeros(self.margin.shape)
+        grad[self.margin > 0] = 1
+        grad[range(self.batch_size), list(self.y)] = - np.sum(grad, axis=1)
+
+        return grad
+
+
 class MSELoss(object):
 
     def __init__(self):
@@ -52,7 +83,6 @@ class MSELoss(object):
 
     def backward(self):
         return (self.input - self.y) / self.batch_size
-
 
 
 class Linear(object):
@@ -128,6 +158,7 @@ class Tanh(object):
 
 
 class ReLU(object):
+
     def __init__(self):
         self.layer = 'activation'
         self.input = None
