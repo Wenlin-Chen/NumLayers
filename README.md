@@ -10,7 +10,7 @@ A Deep Learning Library Written in NumPy
 Requirements
 ----
 - Python 3<br>
-- Numpy<br><br>
+- NumPy<br><br>
 
 Features
 ----
@@ -23,7 +23,7 @@ Losses<br>
 - Cross Entropy Loss<br><br>
 
 Activation Functions<br> 
-- ReLu<br>
+- ReLU<br>
 - Tanh<br>
 - Sigmoid<br><br>
 
