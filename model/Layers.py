@@ -72,14 +72,16 @@ class MSELoss(object):
         self.y = None
 
     def forward(self, input, labels):
+        self.input = input
         self.batch_size = self.input.shape[0]
         self.y = labels.reshape(self.batch_size, -1)
-        self.input = input
         loss = 0.5 * np.linalg.norm(input - self.y) / self.batch_size
         return loss
 
     def score(self, input, y):
-        return 0.5 * np.linalg.norm(input - y) / self.batch_size
+        batch_size = input.shape[0]
+        y = y.reshape(batch_size, -1)
+        return 0.5 * np.linalg.norm(input - y) / batch_size
 
     def backward(self):
         return (self.input - self.y) / self.batch_size

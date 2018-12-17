@@ -97,7 +97,7 @@ class Network(object):
                 if task == 'classification':
                     print('   validation accuracy:', acc)
                 else:
-                    print('   validation score:', acc)
+                    print('   validation loss:', acc)
 
 
                 if task == 'classification':
@@ -118,7 +118,7 @@ class Network(object):
                             best_val = acc
                         acc_te = self.score(self.x_te, self.y_te)
                         test_acc.append(acc_te)
-                        print('   test score:', acc_te)
+                        print('   test loss:', acc_te)
                         if acc_te < best_te:
                             best_te = acc_te
 
@@ -129,7 +129,7 @@ class Network(object):
             print('The optimization ran %fs, best validation accuracy %f with test accuracy %f'
                   % ((time.time() - t), best_val, best_te))
         else:
-            print('The optimization ran %fs, best validation score %f with test score %f'
+            print('The optimization ran %fs, best validation loss %f with test loss %f'
                   % ((time.time() - t), best_val, best_te))
 
         # plotting figure
@@ -146,10 +146,10 @@ class Network(object):
             val_plot, = plt.plot(val_iteration[1:], val_acc[1:], label='Validation accuracy')
             test_plot, = plt.plot(test_iteration[1:], test_acc[1:], label='Test accuracy')
         else:
-            plt.title('Score')
-            plt.ylabel('Validation/Test score')
-            val_plot, = plt.plot(val_iteration[1:], val_acc[1:], label='Validation score')
-            test_plot, = plt.plot(test_iteration[1:], test_acc[1:], label='Test score')
+            plt.title('Loss')
+            plt.ylabel('Validation/Test loss')
+            val_plot, = plt.plot(val_iteration[1:], val_acc[1:], label='Validation loss')
+            test_plot, = plt.plot(test_iteration[1:], test_acc[1:], label='Test loss')
         plt.legend(handles=[val_plot, test_plot], loc='upper left')
         plt.show()
 
