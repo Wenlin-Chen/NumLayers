@@ -10,9 +10,9 @@ class Sigmoid(object):
     def sigmoid(self, z):
         return 1 / (1 + np.exp(-z))
 
-    def forward(self, input):
+    def forward(self, input, Ws):
         self.activation = self.sigmoid(input)
-        return self.activation
+        return self.activation, Ws
 
     def score(self, input):
         return self.sigmoid(input)
@@ -28,9 +28,9 @@ class Tanh(object):
         self.layer = 'activation'
         self.activation = None
 
-    def forward(self, input):
+    def forward(self, input, Ws):
         self.activation = np.tanh(input)
-        return self.activation
+        return self.activation, Ws
 
     def score(self, input):
         return np.tanh(input)
@@ -49,9 +49,9 @@ class ReLU(object):
     def relu(self, z):
         return np.maximum(0, z)
 
-    def forward(self, input):
+    def forward(self, input, Ws):
         self.input = input
-        return self.relu(self.input)
+        return self.relu(self.input), Ws
 
     def score(self, input):
         return self.relu(input)

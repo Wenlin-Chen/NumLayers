@@ -5,7 +5,7 @@ import numpy as np
 
 class Network(object):
 
-    def __init__(self, learning_rate, num_iter, batch_size, lr_decay=None):
+    def __init__(self, learning_rate, num_iter, batch_size, lr_decay=None, l2_reg=None):
         self.layers = []
         self.lr = learning_rate
         self.num_iter = num_iter
@@ -16,19 +16,25 @@ class Network(object):
         if lr_decay:
             self.lr_decay_iter = lr_decay[1:]
             self.lr_decay_rate = lr_decay[0]
+        self.l2_reg = l2_reg
 
 
     def add_layer(self, layer):
+        if self.l2_reg and (layer.layer == 'loss' or layer.layer == 'linear'):
+            layer.l2_reg = self.l2_reg
         self.layers.append(layer)
 
     def forward(self, x, labels):
-        temp = x
+        if self.l2_reg:
+            temp = x, []
+        else:
+            temp = x, None
         loss = None
         for layer in self.layers:
             if layer.layer == 'loss':
-                loss = layer.forward(input=temp, labels=labels)
+                loss = layer.forward(input=temp[0], labels=labels, Ws=temp[1])
             else:
-                temp = layer.forward(input=temp)
+                temp = layer.forward(input=temp[0], Ws=temp[1])
         return loss
 
     def backward(self):
@@ -72,24 +78,31 @@ class Network(object):
         sum_loss = 0
         sum_iter = 0
         for i in range(self.num_iter):
+
+            # learning rate decay
             if self.lr_decay_rate:
                 if i in self.lr_decay_iter:
                     self.lr *= self.lr_decay_rate
 
+            # forward
             batches = np.random.choice(np.arange(self.x_tr.shape[0]), self.batch_size, True)
             x_batch, y_batch = self.x_tr[batches, :], self.y_tr[batches]
             loss = self.forward(x_batch, y_batch)
             sum_loss += loss
             sum_iter += 1
+
+            # backward
             self.backward()
 
+            # print
             if (i != 0) and (i % 100 == 0 or i == self.num_iter - 1):
                 val_iteration.append(i)
-                loss_his.append(sum_loss / sum_iter)
+                ave_loss = sum_loss / sum_iter
+                loss_his.append(ave_loss)
                 sum_loss = 0
                 sum_iter = 0
                 print('iteration:', i)
-                print('   training loss', loss)
+                print('   training loss', ave_loss)
 
                 acc = self.score(self.x_val, self.y_val)
                 val_acc.append(acc)

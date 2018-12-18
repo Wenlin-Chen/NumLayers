@@ -3,7 +3,7 @@ NumLayers
 
 A Deep Learning Library Written in NumPy
 ----
-- A personal project for fun <br><br>
+- A personal project for fun and for the purpose of learning <br><br>
 - Author: Wenlin Chen <br>
 - E-mail: chen.wenlin@outlook.com <br><br>
 18th December, 2018 <br><br>
@@ -32,6 +32,7 @@ Activation Functions<br>
 
 Training Tools<br>
 - Learning Rate Decay<br><br>
+- L2 Regularization
 
 
 Datasets
