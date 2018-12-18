@@ -31,8 +31,8 @@ Activation Functions<br>
 - Sigmoid<br>
 
 Training Tools<br>
-- Learning Rate Decay<br><br>
-- L2 Regularization
+- Learning Rate Decay<br>
+- L2 Regularization<br><br>
 
 
 Datasets
