@@ -1,11 +1,12 @@
-NumLayers 0.3.3
+NumLayers
 ====
 
 A Deep Learning Library Written in NumPy
 ----
+- A personl project for fun <br><br>
 - Author: Wenlin Chen <br>
 - E-mail: chen.wenlin@outlook.com <br><br>
-17th December, 2018 <br><br>
+18th December, 2018 <br><br>
 
 Requirements
 ----
@@ -43,6 +44,6 @@ https://www.cs.toronto.edu/~kriz/cifar.html <br><br>
 Training Curves
 ----
 - main_mnist.py<br>
-![MLP for MNIST training curve](https://github.com/Wenlin-Chen/NumLayers/blob/master/fig_mnist.png)<br><br>
+![MLP for MNIST training curve](https://github.com/Wenlin-Chen/NumLayers/tree/master/logs/fig_mnist.png)<br><br>
 - main_cifar10.py<br>
-![MLP for CIFAR10 training curve](https://github.com/Wenlin-Chen/NumLayers/blob/master/fig_cifar10.png)
+![MLP for CIFAR10 training curve](https://github.com/Wenlin-Chen/NumLayers/tree/master/logs/fig_cifar10.png)
