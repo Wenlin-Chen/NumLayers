@@ -3,7 +3,7 @@ NumLayers
 
 A Deep Learning Library Written in NumPy
 ----
-- A personl project for fun <br><br>
+- A personal project for fun <br><br>
 - Author: Wenlin Chen <br>
 - E-mail: chen.wenlin@outlook.com <br><br>
 18th December, 2018 <br><br>
