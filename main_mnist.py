@@ -1,5 +1,5 @@
 from models import layers, activations, losses
-from utils import load_data, network
+from utils import load_data, network, optimizers
 
 # hyper-parameters
 learning_rate = 0.2
@@ -9,7 +9,10 @@ lr_decay = [0.2, 6000]
 l2_reg = 0.001
 
 # network
-net = network.Network(learning_rate=learning_rate, num_iter=num_iter, batch_size=batch_size, lr_decay=lr_decay, l2_reg=l2_reg)
+net = network.Network(num_iter=num_iter, batch_size=batch_size, l2_reg=l2_reg)
+
+#optimizer
+optimizer = optimizers.SGD(learning_rate=learning_rate, lr_decay=lr_decay)
 
 # layers
 net.add_layer(layers.Linear(n_in=28 * 28 * 1, n_out=1024))
@@ -24,4 +27,4 @@ train, val, test = load_data.load_mnist()
 net.load_data(train, val, test)
 
 # training
-net.train()
+net.train(optimizer)

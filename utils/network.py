@@ -5,36 +5,45 @@ import numpy as np
 
 class Network(object):
 
-    def __init__(self, learning_rate, num_iter, batch_size, lr_decay=None, l2_reg=None):
+    def __init__(self, num_iter, batch_size, l2_reg=None):
         self.layers = []
-        self.lr = learning_rate
+        self.num_layers = 0
         self.num_iter = num_iter
         self.batch_size = batch_size
         self.x_tr, self.y_tr, self.x_val, self.y_val, self.x_te, self.y_te = None, None, None, None, None, None
-        self.lr_decay_rate = None
-        self.lr_decay_iter = None
-        if lr_decay:
-            self.lr_decay_iter = lr_decay[1:]
-            self.lr_decay_rate = lr_decay[0]
         self.l2_reg = l2_reg
+        self.params = {}
+        self.grads = {}
 
 
     def add_layer(self, layer):
-        if self.l2_reg and (layer.layer == 'loss' or layer.layer == 'linear'):
+        layer.num = self.num_layers
+        self.num_layers += 1
+        if layer.layer == 'linear':
+            if self.l2_reg:
+                layer.l2_reg = self.l2_reg
+            self.params['W'+str(layer.num)] = layer.W
+            self.params['b'+str(layer.num)] = layer.b
+            self.grads['W'+str(layer.num)] = layer.W_grad
+            self.grads['b' + str(layer.num)] = layer.b_grad
+        if layer.layer == 'batch_norm':
+            self.params['gamma' + str(layer.num)] = layer.gamma
+            self.params['beta' + str(layer.num)] = layer.beta
+            self.grads['gamma' + str(layer.num)] = layer.gamma_grad
+            self.grads['beta' + str(layer.num)] = layer.beta_grad
+        if layer.layer == 'loss' and self.l2_reg:
             layer.l2_reg = self.l2_reg
+            layer.params = self.params
         self.layers.append(layer)
 
     def forward(self, x, labels):
-        if self.l2_reg:
-            temp = x, []
-        else:
-            temp = x, None
+        temp = x
         loss = None
         for layer in self.layers:
             if layer.layer == 'loss':
-                loss = layer.forward(input=temp[0], labels=labels, Ws=temp[1])
+                loss = layer.forward(input=temp, labels=labels)
             else:
-                temp = layer.forward(input=temp[0], Ws=temp[1])
+                temp = layer.forward(input=temp)
         return loss
 
     def backward(self):
@@ -42,8 +51,6 @@ class Network(object):
         for layer in reversed(self.layers):
             if layer.layer == 'loss':
                 temp = layer.backward()
-            elif layer.layer == 'linear' or layer.layer == 'batch_norm':
-                temp = layer.backward(grad=temp, learning_rate=self.lr)
             else:
                 temp = layer.backward(grad=temp)
 
@@ -57,9 +64,10 @@ class Network(object):
                 temp = layer.score(input=temp)
         return acc
 
-    def train(self, task='classification'):
+    def train(self, optimizer, task='classification'):
         if task != 'classification' and task != 'regression':
             raise Exception('Unknown task (neither classification nor regression)')
+
         # recorder
         val_iteration = []
         test_iteration = []
@@ -77,13 +85,12 @@ class Network(object):
         t = time.time()
         sum_loss = 0
         sum_iter = 0
+
+        # loading optimizer
+        optimizer.params = self.params
+        optimizer.grads = self.grads
+
         for i in range(self.num_iter):
-
-            # learning rate decay
-            if self.lr_decay_rate:
-                if i in self.lr_decay_iter:
-                    self.lr *= self.lr_decay_rate
-
             # forward
             batches = np.random.choice(np.arange(self.x_tr.shape[0]), self.batch_size, True)
             x_batch, y_batch = self.x_tr[batches, :], self.y_tr[batches]
@@ -93,6 +100,9 @@ class Network(object):
 
             # backward
             self.backward()
+
+            # parameters update
+            optimizer.step(i, zero_grad=True)
 
             # print
             if (i != 0) and (i % 100 == 0 or i == self.num_iter - 1):
@@ -111,7 +121,6 @@ class Network(object):
                     print('   validation accuracy:', acc)
                 else:
                     print('   validation loss:', acc)
-
 
                 if task == 'classification':
                     if acc > best_val or i == self.num_iter - 1:
@@ -170,3 +179,7 @@ class Network(object):
         self.x_tr, self.y_tr = train
         self.x_val, self.y_val = val
         self.x_te, self. y_te = test
+
+    def zero_grad(self):
+        for _, val in self.grads:
+            val[0] = 0
