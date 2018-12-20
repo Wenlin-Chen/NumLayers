@@ -44,12 +44,16 @@ class Tanh(object):
 
 class ReLU(object):
 
-    def __init__(self):
+    def __init__(self, inplace=True):
         self.layer = 'activation'
         self.num = None
         self.input = None
+        self.inplace = inplace
 
     def relu(self, z):
+        if self.inplace:
+            z[z < 0] = 0
+            return z
         return np.maximum(0, z)
 
     def forward(self, input):
@@ -60,6 +64,9 @@ class ReLU(object):
         return self.relu(input)
 
     def backward(self, grad):
+        if self.inplace:
+            self.input[self.input > 0] = 1
+            return grad * self.input
         tmp = np.where(self.input > 0, self.input, 0.0)
         activation_derivative = np.where(tmp <= 0, tmp, 1.0)
         return grad * activation_derivative

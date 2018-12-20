@@ -68,6 +68,9 @@ class Network(object):
         if task != 'classification' and task != 'regression':
             raise Exception('Unknown task (neither classification nor regression)')
 
+        # set all the gradient to be zero
+        self.zero_grad()
+
         # recorder
         val_iteration = []
         test_iteration = []
@@ -102,7 +105,7 @@ class Network(object):
             self.backward()
 
             # parameters update
-            optimizer.step(i, zero_grad=True)
+            optimizer.step(i)
 
             # print
             if (i != 0) and (i % 100 == 0 or i == self.num_iter - 1):
@@ -181,5 +184,5 @@ class Network(object):
         self.x_te, self. y_te = test
 
     def zero_grad(self):
-        for _, val in self.grads:
-            val[0] = 0
+        for _, grad in self.grads.items():
+            grad[0] = 0

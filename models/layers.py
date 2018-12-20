@@ -49,7 +49,6 @@ class Dropout(object):
 
     def forward(self, input):
         self.keep = np.random.binomial(n=1, p=self.keep_prob, size=input.shape)
-
         return self.keep * input / self.keep_prob
 
     def score(self, input):
@@ -69,6 +68,8 @@ class BatchNorm1d(object):
         self.mu = None
         self.var = None
         self.normalized = None
+        self.input_mu = None
+        self.std_inv = None
         self.gamma = [np.ones(shape=[1, n_in])]
         self.beta = [np.zeros(shape=[1, n_in])]
         self.gamma_grad = [np.zeros(self.gamma[0].shape)]
@@ -79,7 +80,9 @@ class BatchNorm1d(object):
         self.batch_size = self.input.shape[0]
         self.mu = np.mean(self.input, axis=0)
         self.var = np.var(self.input, axis=0)
-        self.normalized = (self.input - self.mu) / np.sqrt(self.var + 1e-8)
+        self.input_mu = self.input - self.mu
+        self.std_inv = 1 / np.sqrt(self.var + 1e-8)
+        self.normalized = self.input_mu * self.std_inv
 
         return self.gamma[0] * self.normalized + self.beta[0]
 
@@ -94,11 +97,9 @@ class BatchNorm1d(object):
         self.beta_grad[0] = np.sum(grad, axis=0)
         self.gamma_grad[0] = np.sum(grad * self.normalized, axis=0)
 
-        input_mu = self.input - self.mu
-        std_inv = 1 / np.sqrt(self.var + 1e-8)
         dnormalized = grad * self.gamma[0]
-        dvar = np.sum(dnormalized * input_mu, axis=0) * (-0.5) * std_inv ** 3
-        dmu = np.sum(dnormalized * -std_inv, axis=0) + dvar * np.mean(-2 * input_mu, axis=0)
+        dvar = np.sum(dnormalized * self.input_mu, axis=0) * (-0.5) * self.std_inv ** 3
+        dmu = np.sum(dnormalized * (- self.std_inv), axis=0) + dvar * np.mean(-2 * self.input_mu, axis=0)
 
-        return dnormalized * std_inv + dvar * 2 * input_mu / self.batch_size + dmu / self.batch_size
+        return dnormalized * self.std_inv + dvar * 2 * self.input_mu / self.batch_size + dmu / self.batch_size
 
