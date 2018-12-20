@@ -102,4 +102,3 @@ class BatchNorm1d(object):
         dmu = np.sum(dnormalized * (- self.std_inv), axis=0) + dvar * np.mean(-2 * self.input_mu, axis=0)
 
         return dnormalized * self.std_inv + dvar * 2 * self.input_mu / self.batch_size + dmu / self.batch_size
-

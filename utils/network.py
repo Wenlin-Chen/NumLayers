@@ -21,7 +21,8 @@ class Network(object):
         self.num_layers += 1
         if layer.layer == 'linear':
             if self.l2_reg:
-                layer.l2_reg = self.l2_reg
+                if self.l2_reg != 0:
+                    layer.l2_reg = self.l2_reg
             self.params['W'+str(layer.num)] = layer.W
             self.params['b'+str(layer.num)] = layer.b
             self.grads['W'+str(layer.num)] = layer.W_grad

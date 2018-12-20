@@ -4,10 +4,10 @@ NumLayers
 A Deep Learning Library Written in NumPy
 ----
 - A personal project for fun and for the purpose of learning <br>
-- Version: 0.4.0 <br><br>
+- Version: 0.4.1 <br><br>
 - Author: Wenlin Chen <br>
 - E-mail: chen.wenlin@outlook.com <br><br>
-19th December, 2018 <br><br>
+21th December, 2018 <br><br>
 
 Requirements
 ----
@@ -28,11 +28,13 @@ Losses<br>
 
 Activation Functions<br> 
 - ReLU<br>
+- Leaky ReLU<br>
 - Tanh<br>
 - Sigmoid<br>
 
 Optimizers<br>
 - Stochastic Gradient Descent<br>
+- Momentum<br>
 
 Training Tools<br>
 - Learning Rate Decay<br>

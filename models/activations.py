@@ -68,5 +68,29 @@ class ReLU(object):
             self.input[self.input > 0] = 1
             return grad * self.input
         tmp = np.where(self.input > 0, self.input, 0.0)
-        activation_derivative = np.where(tmp <= 0, tmp, 1.0)
+        activation_derivative = np.where(self.input <= 0, tmp, 1.0)
+        return grad * activation_derivative
+
+
+class LeakeyReLU(object):
+
+    def __init__(self, negative_slope=0.01):
+        self.layer = 'activation'
+        self.num = None
+        self.negative_slope = negative_slope
+        self.input = None
+
+    def leaky_relu(self, z):
+        return np.maximum(self.negative_slope * z, z)
+
+    def forward(self, input):
+        self.input = input
+        return self.leaky_relu(self.input)
+
+    def score(self, input):
+        return self.leaky_relu(input)
+
+    def backward(self, grad):
+        tmp = np.where(self.input <= 0, self.input, 1.0)
+        activation_derivative = np.where(self.input > 0, tmp, self.negative_slope)
         return grad * activation_derivative
