@@ -1,8 +1,8 @@
 class SGD(object):
 
-    def __init__(self, learning_rate, lr_decay):
-        self.params = None
-        self.grads = None
+    def __init__(self, learning_rate, lr_decay, params, grads):
+        self.params = params
+        self.grads = grads
         self.lr = learning_rate
         self.lr_decay_rate = None
         self.lr_decay_iter = None

@@ -12,7 +12,7 @@ l2_reg = 0.001
 net = network.Network(num_iter=num_iter, batch_size=batch_size, l2_reg=l2_reg)
 
 # optimizer
-optimizer = optimizers.SGD(learning_rate=learning_rate, lr_decay=lr_decay)
+optimizer = optimizers.SGD(learning_rate=learning_rate, lr_decay=lr_decay, params=net.params, grads=net.grads)
 
 # layers
 net.add_layer(layers.Linear(n_in=32 * 32 * 3, n_out=1024))

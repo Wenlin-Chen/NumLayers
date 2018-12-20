@@ -68,9 +68,6 @@ class Network(object):
         if task != 'classification' and task != 'regression':
             raise Exception('Unknown task (neither classification nor regression)')
 
-        # set all the gradient to be zero
-        self.zero_grad()
-
         # recorder
         val_iteration = []
         test_iteration = []
@@ -89,11 +86,10 @@ class Network(object):
         sum_loss = 0
         sum_iter = 0
 
-        # loading optimizer
-        optimizer.params = self.params
-        optimizer.grads = self.grads
-
         for i in range(self.num_iter):
+            # set all the gradients to be zero
+            self.zero_grad()
+
             # forward
             batches = np.random.choice(np.arange(self.x_tr.shape[0]), self.batch_size, True)
             x_batch, y_batch = self.x_tr[batches, :], self.y_tr[batches]
