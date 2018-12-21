@@ -4,7 +4,7 @@ import numpy as np
 class Linear(object):
 
     def __init__(self, n_in, n_out):
-        self.layer = 'linear'
+        self.block = 'linear'
         self.num = None
         self.n_in = n_in
         self.n_out = n_out
@@ -42,7 +42,7 @@ class Linear(object):
 class Dropout(object):
 
     def __init__(self, keep_prob):
-        self.layer = 'dropout'
+        self.block = 'dropout'
         self.num = None
         self.keep_prob = keep_prob
         self.keep = None
@@ -61,7 +61,7 @@ class Dropout(object):
 class BatchNorm1d(object):
 
     def __init__(self, n_in):
-        self.layer = 'batch_norm'
+        self.block = 'batch_norm'
         self.num = None
         self.input = None
         self.batch_size = None

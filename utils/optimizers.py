@@ -1,8 +1,8 @@
 class SGD(object):
 
-    def __init__(self, learning_rate, params, grads, lr_decay=None):
-        self.params = params
-        self.grads = grads
+    def __init__(self, learning_rate, lr_decay=None):
+        self.params = None
+        self.grads = None
         self.lr = learning_rate
         self.lr_decay_rate = None
         self.lr_decay_iter = None
@@ -16,16 +16,19 @@ class SGD(object):
         for key, param in self.params.items():
             param[0] -= self.lr * self.grads[key][0]
 
+    def load(self, params, grads):
+        self.params = params
+        self.grads = grads
+
 
 class Momentum(object):
 
-    def __init__(self, learning_rate, params, grads, lr_decay=None, momentum=0.9):
-        self.params = params
-        self.grads = grads
+    def __init__(self, learning_rate, momentum=0.9, lr_decay=None):
+        self.params = None
+        self.grads = None
         self.lr = learning_rate
         self.momentum = momentum
         self.velocity = {}
-        self.load_momentum()
         self.lr_decay_rate = None
         self.lr_decay_iter = None
         if lr_decay:
@@ -42,3 +45,8 @@ class Momentum(object):
     def load_momentum(self):
         for key in self.params:
             self.velocity[key] = 0
+
+    def load(self, params, grads):
+        self.params = params
+        self.grads = grads
+        self.load_momentum()

@@ -4,7 +4,7 @@ import numpy as np
 class Sigmoid(object):
 
     def __init__(self):
-        self.layer = 'activation'
+        self.block = 'activation'
         self.num = None
         self.activation = None
 
@@ -26,7 +26,7 @@ class Sigmoid(object):
 class Tanh(object):
 
     def __init__(self):
-        self.layer = 'activation'
+        self.block = 'activation'
         self.num = None
         self.activation = None
 
@@ -45,7 +45,7 @@ class Tanh(object):
 class ReLU(object):
 
     def __init__(self, inplace=True):
-        self.layer = 'activation'
+        self.block = 'activation'
         self.num = None
         self.input = None
         self.inplace = inplace
@@ -75,7 +75,7 @@ class ReLU(object):
 class LeakeyReLU(object):
 
     def __init__(self, negative_slope=0.01):
-        self.layer = 'activation'
+        self.block = 'activation'
         self.num = None
         self.negative_slope = negative_slope
         self.input = None

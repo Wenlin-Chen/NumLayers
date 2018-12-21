@@ -50,7 +50,7 @@ https://www.cs.toronto.edu/~kriz/cifar.html <br><br>
 
 Training Curves
 ----
-- main_mnist.py<br>
-![MLP for MNIST training curve](https://github.com/Wenlin-Chen/NumLayers/blob/master/logs/fig_mnist.png)<br><br>
-- main_cifar10.py<br>
-![MLP for CIFAR10 training curve](https://github.com/Wenlin-Chen/NumLayers/blob/master/logs/fig_cifar10.png)
+- mlp_mnist.py<br>
+![MLP for MNIST training curve](https://github.com/Wenlin-Chen/NumLayers/blob/master/logs/mlp_mnist.png)<br><br>
+- mlp_cifar10.py<br>
+![MLP for CIFAR10 training curve](https://github.com/Wenlin-Chen/NumLayers/blob/master/logs/mlp_cifar10.png)

@@ -6,8 +6,8 @@ import numpy as np
 class Network(object):
 
     def __init__(self, num_iter, batch_size, l2_reg=None):
-        self.layers = []
-        self.num_layers = 0
+        self.blocks = []
+        self.num_blocks = 0
         self.num_iter = num_iter
         self.batch_size = batch_size
         self.x_tr, self.y_tr, self.x_val, self.y_val, self.x_te, self.y_te = None, None, None, None, None, None
@@ -16,53 +16,53 @@ class Network(object):
         self.grads = {}
 
 
-    def add_layer(self, layer):
-        layer.num = self.num_layers
-        self.num_layers += 1
-        if layer.layer == 'linear':
+    def add_block(self, block):
+        block.num = self.num_blocks
+        self.num_blocks += 1
+        if block.block == 'linear':
             if self.l2_reg:
                 if self.l2_reg != 0:
-                    layer.l2_reg = self.l2_reg
-            self.params['W'+str(layer.num)] = layer.W
-            self.params['b'+str(layer.num)] = layer.b
-            self.grads['W'+str(layer.num)] = layer.W_grad
-            self.grads['b' + str(layer.num)] = layer.b_grad
-        if layer.layer == 'batch_norm':
-            self.params['gamma' + str(layer.num)] = layer.gamma
-            self.params['beta' + str(layer.num)] = layer.beta
-            self.grads['gamma' + str(layer.num)] = layer.gamma_grad
-            self.grads['beta' + str(layer.num)] = layer.beta_grad
-        if layer.layer == 'loss' and self.l2_reg:
-            layer.l2_reg = self.l2_reg
-            layer.params = self.params
-        self.layers.append(layer)
+                    block.l2_reg = self.l2_reg
+            self.params['W'+str(block.num)] = block.W
+            self.params['b'+str(block.num)] = block.b
+            self.grads['W'+str(block.num)] = block.W_grad
+            self.grads['b' + str(block.num)] = block.b_grad
+        if block.block == 'batch_norm':
+            self.params['gamma' + str(block.num)] = block.gamma
+            self.params['beta' + str(block.num)] = block.beta
+            self.grads['gamma' + str(block.num)] = block.gamma_grad
+            self.grads['beta' + str(block.num)] = block.beta_grad
+        if block.block == 'loss' and self.l2_reg:
+            block.l2_reg = self.l2_reg
+            block.params = self.params
+        self.blocks.append(block)
 
     def forward(self, x, labels):
         temp = x
         loss = None
-        for layer in self.layers:
-            if layer.layer == 'loss':
-                loss = layer.forward(input=temp, labels=labels)
+        for block in self.blocks:
+            if block.block == 'loss':
+                loss = block.forward(input=temp, labels=labels)
             else:
-                temp = layer.forward(input=temp)
+                temp = block.forward(input=temp)
         return loss
 
     def backward(self):
         temp = None
-        for layer in reversed(self.layers):
-            if layer.layer == 'loss':
-                temp = layer.backward()
+        for block in reversed(self.blocks):
+            if block.block == 'loss':
+                temp = block.backward()
             else:
-                temp = layer.backward(grad=temp)
+                temp = block.backward(grad=temp)
 
     def score(self, x, y):
         temp = x
         acc = None
-        for layer in self.layers:
-            if layer.layer == 'loss':
-                acc = layer.score(input=temp, y=y)
+        for block in self.blocks:
+            if block.block == 'loss':
+                acc = block.score(input=temp, y=y)
             else:
-                temp = layer.score(input=temp)
+                temp = block.score(input=temp)
         return acc
 
     def train(self, optimizer, task='classification'):
@@ -82,10 +82,13 @@ class Network(object):
             best_val = np.inf
             best_te = np.inf
 
+        # loading optimizer
+        optimizer.load(self.params, self.grads)
+
         # training
-        t = time.time()
         sum_loss = 0
         sum_iter = 0
+        t = time.time()
 
         for i in range(self.num_iter):
             # set all the gradients to be zero

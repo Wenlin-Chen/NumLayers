@@ -4,7 +4,7 @@ import numpy as np
 class CrossEntropyLoss(object):
 
     def __init__(self):
-        self.layer = 'loss'
+        self.block = 'loss'
         self.num = None
         self.batch_size = None
         self.y = None
@@ -42,7 +42,7 @@ class CrossEntropyLoss(object):
 class HingeLoss(object):
 
     def __init__(self):
-        self.layer = 'loss'
+        self.block = 'loss'
         self.num = None
         self.batch_size = None
         self.y = None
@@ -80,7 +80,7 @@ class HingeLoss(object):
 class MSELoss(object):
 
     def __init__(self):
-        self.layer = 'loss'
+        self.block = 'loss'
         self.num = None
         self.input = None
         self.batch_size = None
