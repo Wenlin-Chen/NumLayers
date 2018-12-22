@@ -19,7 +19,7 @@ class Network(object):
     def add_block(self, block):
         block.num = self.num_blocks
         self.num_blocks += 1
-        if block.block == 'linear':
+        if block.block == 'linear' or block.block == 'conv2d':
             if self.l2_reg:
                 if self.l2_reg != 0:
                     block.l2_reg = self.l2_reg
@@ -181,7 +181,7 @@ class Network(object):
     def load_data(self, train, val, test):
         self.x_tr, self.y_tr = train
         self.x_val, self.y_val = val
-        self.x_te, self. y_te = test
+        self.x_te, self.y_te = test
 
     def zero_grad(self):
         for _, grad in self.grads.items():

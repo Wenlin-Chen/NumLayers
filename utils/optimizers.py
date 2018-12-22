@@ -61,8 +61,7 @@ class Adam(object):
         self.m = {}
         self.v = {}
         self.lr = learning_rate
-        self.beta1 = betas[0]
-        self.beta2 = betas[1]
+        self.beta1, self.beta2 = betas
 
     def step(self, iter):
         t = iter + 1
