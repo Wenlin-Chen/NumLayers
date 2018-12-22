@@ -65,7 +65,7 @@ class Network(object):
                 temp = block.score(input=temp)
         return acc
 
-    def train(self, optimizer, task='classification'):
+    def train(self, optimizer, task='classification', print_freq=100):
         if task != 'classification' and task != 'regression':
             raise Exception('Unknown task (neither classification nor regression)')
 
@@ -95,7 +95,7 @@ class Network(object):
             self.zero_grad()
 
             # forward
-            batches = np.random.choice(np.arange(self.x_tr.shape[0]), self.batch_size, True)
+            batches = np.random.choice(np.arange(self.x_tr.shape[0]), self.batch_size, replace=False)
             x_batch, y_batch = self.x_tr[batches, :], self.y_tr[batches]
             loss = self.forward(x_batch, y_batch)
             sum_loss += loss
@@ -107,8 +107,8 @@ class Network(object):
             # parameters update
             optimizer.step(i)
 
-            # print
-            if (i != 0) and (i % 100 == 0 or i == self.num_iter - 1):
+            # print and record
+            if i % print_freq == 0 or i == self.num_iter - 1:
                 val_iteration.append(i)
                 ave_loss = sum_loss / sum_iter
                 loss_his.append(ave_loss)

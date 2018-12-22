@@ -4,15 +4,16 @@ NumLayers
 A Deep Learning Library Written in NumPy
 ----
 - A personal project for fun and for the purpose of learning <br>
-- Version: 0.4.1 <br><br>
+- Version: 0.4.2 <br><br>
 - Author: Wenlin Chen <br>
 - E-mail: chen.wenlin@outlook.com <br><br>
-21th December, 2018 <br><br>
+22nd December, 2018 <br><br>
 
 Requirements
 ----
 - Python 3.x<br>
-- NumPy<br><br>
+- NumPy<br>
+- Matplotlib<br><br>
 
 Features
 ----
@@ -24,6 +25,7 @@ Layers<br>
 Losses<br>
 - Cross Entropy Loss<br>
 - Hinge Loss<br>
+- Binary Cross Entropy Loss<br>
 - Mean Square Error Loss<br>
 
 Activation Functions<br> 
@@ -35,6 +37,7 @@ Activation Functions<br>
 Optimizers<br>
 - Stochastic Gradient Descent<br>
 - Momentum<br>
+- Adam<br>
 
 Training Tools<br>
 - Learning Rate Decay<br>

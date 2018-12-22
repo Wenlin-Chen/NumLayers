@@ -2,10 +2,9 @@ from blocks import layers, activations, losses
 from utils import load_data, network, optimizers
 
 # hyper-parameters
-learning_rate = 0.01
+learning_rate = 0.0003
 num_iter = 10000
 batch_size = 128
-lr_decay = None
 l2_reg = 0.001
 
 # network
@@ -24,7 +23,7 @@ net.add_block(layers.Linear(n_in=1024, n_out=10))
 net.add_block(losses.CrossEntropyLoss())
 
 # optimizer
-optimizer = optimizers.Momentum(learning_rate=learning_rate, momentum=0.9, lr_decay=lr_decay)
+optimizer = optimizers.Adam(learning_rate=learning_rate, betas=(0.9, 0.999))
 
 # data
 train, val, test = load_data.load_cifar10()

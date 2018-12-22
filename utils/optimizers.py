@@ -1,3 +1,6 @@
+import numpy as np
+
+
 class SGD(object):
 
     def __init__(self, learning_rate, lr_decay=None):
@@ -42,11 +45,36 @@ class Momentum(object):
             self.velocity[key] = self.velocity[key] * self.momentum + self.lr * self.grads[key][0]
             param[0] -= self.velocity[key]
 
-    def load_momentum(self):
-        for key in self.params:
-            self.velocity[key] = 0
 
     def load(self, params, grads):
         self.params = params
         self.grads = grads
-        self.load_momentum()
+        for key in self.params:
+            self.velocity[key] = 0
+
+
+class Adam(object):
+
+    def __init__(self, learning_rate, betas=(0.9, 0.999)):
+        self.params = None
+        self.grads = None
+        self.m = {}
+        self.v = {}
+        self.lr = learning_rate
+        self.beta1 = betas[0]
+        self.beta2 = betas[1]
+
+    def step(self, iter):
+        t = iter + 1
+        for key, param in self.params.items():
+            self.m[key] = self.beta1 * self.m[key] + (1 - self.beta1) * self.grads[key][0]
+            self.v[key] = self.beta2 * self.v[key] + (1 - self.beta2) * np.square(self.grads[key][0])
+            lr = self.lr * np.sqrt(1 - self.beta2**t) / (1 - self.beta1**t)
+            param[0] -= lr * (self.m[key] / (np.sqrt(self.v[key] + 1e-8)))
+
+    def load(self, params, grads):
+        self.params = params
+        self.grads = grads
+        for key in self.params:
+            self.v[key] = 0
+            self.m[key] = 0

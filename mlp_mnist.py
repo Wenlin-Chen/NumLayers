@@ -2,7 +2,7 @@ from blocks import layers, activations, losses
 from utils import load_data, network, optimizers
 
 # hyper-parameters
-learning_rate = 0.2
+learning_rate = 0.1
 num_iter = 10000
 batch_size = 128
 lr_decay = [0.2, 6000]
@@ -20,7 +20,7 @@ net.add_block(layers.Linear(n_in=1024, n_out=10))
 net.add_block(losses.CrossEntropyLoss())
 
 #optimizer
-optimizer = optimizers.SGD(learning_rate=learning_rate, lr_decay=lr_decay)
+optimizer = optimizers.Momentum(learning_rate=learning_rate, momentum=0.9, lr_decay=lr_decay)
 
 # data
 train, val, test = load_data.load_mnist()
