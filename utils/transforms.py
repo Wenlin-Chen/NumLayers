@@ -75,6 +75,7 @@ class RandomVerticaltalFlip(object):
                 x_data[i] = x_data[i, :, ::-1, :]
         return x_data
 
+
 class RandomCrop(object):
 
     def __init__(self, crop_size):
