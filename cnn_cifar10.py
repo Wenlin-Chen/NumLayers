@@ -11,7 +11,7 @@ l2_reg = 1e-5
 print_freq = 100
 
 # network
-net = network.Network(num_iter=num_iter, batch_size=batch_size, l2_reg=l2_reg)
+net = network.Network(l2_reg=l2_reg)
 
 # blocks
 net.add_block(layers.Conv2d(in_channels=3, out_channels=8, kernel_size=(5, 5), padding=2, stride=1))
@@ -40,7 +40,7 @@ net.load_data(train, val, test)
 # training
 t = time.time()
 for step in range(num_iter):
-    net.train(optimizer, step)
+    net.train_step(optimizer, step, batch_size)
     if step % print_freq == 0 or step == num_iter - 1:
-        net.eval(step, split=100)
+        net.eval(step, num_iter, split=100)
 net.plot(time.time() - t)

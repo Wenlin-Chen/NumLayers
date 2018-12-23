@@ -4,14 +4,12 @@ import numpy as np
 
 class Network(object):
 
-    def __init__(self, num_iter, batch_size, l2_reg=None, task='classification'):
+    def __init__(self, l2_reg=None, task='classification'):
         self.task = task
         if self.task != 'classification' and self.task != 'regression':
             raise Exception('Unknown task (neither classification nor regression)')
         self.blocks = []
         self.num_blocks = 0
-        self.num_iter = num_iter
-        self.batch_size = batch_size
         self.x_tr, self.y_tr, self.x_val, self.y_val, self.x_te, self.y_te = None, None, None, None, None, None
         self.l2_reg = l2_reg
         self.params = {}
@@ -82,13 +80,13 @@ class Network(object):
                 temp = block.score(input=temp)
         return acc
 
-    def train(self, optimizer, step):
+    def train_step(self, optimizer, step, batch_size):
 
         # set all the gradients to be zero
         self.zero_grad()
 
         # forward
-        batches = np.random.choice(np.arange(self.x_tr.shape[0]), self.batch_size, replace=False)
+        batches = np.random.choice(np.arange(self.x_tr.shape[0]), batch_size, replace=False)
         x_batch, y_batch = self.x_tr[batches, :], self.y_tr[batches]
         loss = self.forward(x_batch, y_batch)
         self.sum_loss += loss
@@ -100,7 +98,7 @@ class Network(object):
         # parameters update
         optimizer.step(step)
 
-    def eval(self, step, split=1):
+    def eval(self, step, num_iter, split=1):
         # split validation and test data into subsets
         x_val, y_val = np.split(self.x_val, split), np.split(self.y_val, split)
         x_te, y_te = np.split(self.x_te, split), np.split(self.y_te, split)
@@ -126,7 +124,7 @@ class Network(object):
             print('   validation loss:', acc)
 
         if self.task == 'classification':
-            if acc > self.best_val or step == self.num_iter - 1:
+            if acc > self.best_val or step == num_iter - 1:
                 self.test_iteration.append(step)
                 if acc > self.best_val:
                     self.best_val = acc
@@ -139,7 +137,7 @@ class Network(object):
                 if acc_te > self.best_te:
                     self.best_te = acc_te
         else:
-            if acc < self.best_val or step == self.num_iter - 1:
+            if acc < self.best_val or step == num_iter - 1:
                 self.test_iteration.append(step)
                 if acc < self.best_val:
                     self.best_val = acc
