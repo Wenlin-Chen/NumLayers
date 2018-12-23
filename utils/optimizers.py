@@ -55,15 +55,22 @@ class Momentum(object):
 
 class Adam(object):
 
-    def __init__(self, learning_rate, betas=(0.9, 0.999)):
+    def __init__(self, learning_rate, betas=(0.9, 0.999), lr_decay=None):
         self.params = None
         self.grads = None
         self.m = {}
         self.v = {}
         self.lr = learning_rate
         self.beta1, self.beta2 = betas
+        self.lr_decay_rate = None
+        self.lr_decay_iter = None
+        if lr_decay:
+            self.lr_decay_rate = lr_decay[0]
+            self.lr_decay_iter = lr_decay[1:]
 
     def step(self, iter):
+        if self.lr_decay_rate and iter in self.lr_decay_iter:
+            self.lr *= self.lr_decay_rate
         t = iter + 1
         for key, param in self.params.items():
             self.m[key] = self.beta1 * self.m[key] + (1 - self.beta1) * self.grads[key][0]

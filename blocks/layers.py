@@ -60,7 +60,8 @@ class Conv2d(object):
         self.padding = padding
         self.out_H = None
         self.out_W = None
-        self.W = [np.random.randn(self.out_C, self.in_C, self.kernel_H, self.kernel_W) * np.sqrt(2 / (self.kernel_H * self.kernel_W * self.in_C))]
+        self.W = [np.random.randn(self.out_C, self.in_C, self.kernel_H, self.kernel_W) *
+                  np.sqrt(2 / (self.kernel_H * self.kernel_W * self.in_C))]
         self.b = [np.zeros(shape=[self.out_C, 1])]
         self.W_grad = [np.zeros(self.W[0].shape)]
         self.b_grad = [np.zeros(self.b[0].shape)]
@@ -106,7 +107,8 @@ class Conv2d(object):
             self.W_grad[0] = np.dot(grad_reshaped, self.cols.T).reshape(self.W[0].shape)
         dcols = np.dot(self.W[0].reshape(self.out_C, -1).T, grad_reshaped)
 
-        return col2im_cython(dcols, self.input.shape[0], self.input.shape[1], self.input.shape[2], self.input.shape[3], self.kernel_H, self.kernel_W, self.padding, self.stride)
+        return col2im_cython(dcols, self.input.shape[0], self.input.shape[1], self.input.shape[2], self.input.shape[3],
+                             self.kernel_H, self.kernel_W, self.padding, self.stride)
 
 
 class Dropout(object):

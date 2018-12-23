@@ -1,5 +1,6 @@
 from blocks import layers, activations, losses
 from utils import load_data, network, optimizers
+from utils.transforms import *
 import time
 
 
@@ -33,8 +34,10 @@ net.add_block(losses.CrossEntropyLoss())
 optimizer = optimizers.Adam(learning_rate=learning_rate, betas=(0.9, 0.999))
 optimizer.load(net.params, net.grads)
 
-# data
-train, val, test = load_data.load_mnist()
+# data and augmentation
+train_transform = Transforms([ToTensor()])
+val_test_transform = Transforms([ToTensor()])
+train, val, test = load_data.load_mnist(train_transform, val_test_transform)
 net.load_data(train, val, test)
 
 # training

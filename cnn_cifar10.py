@@ -1,13 +1,15 @@
 from blocks import layers, activations, losses
 from utils import load_data, network, optimizers
+from utils.transforms import *
 import time
 
 
 # hyper-parameters
-learning_rate = 0.001
-num_iter = 5000
+learning_rate = 0.003
+num_iter = 10000
 batch_size = 128
 l2_reg = 1e-5
+lr_decay = [0.1, 3000, 6000]
 print_freq = 100
 
 # network
@@ -30,11 +32,15 @@ net.add_block(layers.Linear(n_in=512, n_out=10))
 net.add_block(losses.CrossEntropyLoss())
 
 #optimizer
-optimizer = optimizers.Adam(learning_rate=learning_rate, betas=(0.9, 0.999))
+optimizer = optimizers.Adam(learning_rate=learning_rate, betas=(0.9, 0.999), lr_decay=lr_decay)
 optimizer.load(net.params, net.grads)
 
-# data
-train, val, test = load_data.load_cifar10()
+# data and augmentation
+mean = [x / 255 for x in [125.3, 123.0, 113.9]]
+std = [x / 255 for x in [63.0, 62.1, 66.7]]
+train_transform = Transforms([ToTensor(), Pad(4), RandomCrop(32), RandomHorizontalFlip(), Normalize(mean, std)])
+val_test_transform = Transforms([ToTensor(), Normalize(mean, std)])
+train, val, test = load_data.load_cifar10(train_transform, val_test_transform)
 net.load_data(train, val, test)
 
 # training

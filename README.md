@@ -4,7 +4,7 @@ NumLayers
 A Deep Learning Library Written in NumPy
 ----
 - A personal project for fun and for the purpose of learning <br>
-- Version: 0.5.0 <br><br>
+- Version: 0.5.1 <br><br>
 - Author: Wenlin Chen <br>
 - E-mail: chen.wenlin@outlook.com <br><br>
 23rd December, 2018 <br><br>
@@ -32,8 +32,8 @@ Losses<br>
 - Binary Cross Entropy Loss<br>
 
 Activation Functions<br> 
-- ReLU<br>
 - Tanh<br>
+- ReLU<br>
 - Sigmoid<br>
 - Leaky ReLU<br>
 
@@ -43,8 +43,9 @@ Optimizers<br>
 - Stochastic Gradient Descent<br>
 
 Training Tools<br>
-- Learning Rate Decay<br>
-- L2 Regularization<br><br>
+- L2 Regularization<br>
+- Data Augmentation<br>
+- Learning Rate Decay<br><br>
 
 
 Datasets
