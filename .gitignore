@@ -1,3 +1,6 @@
 blocks/__pycache__/
 utils/__pycache__/
+utils/build/
+utils/im2col_cython.c
+utils/im2col_cython.cpython-36m-x86_64-linux-gnu.so
 .idea/
