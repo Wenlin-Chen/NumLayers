@@ -61,4 +61,6 @@ Training Curves
 - mlp_cifar10.py<br>
 ![MLP for CIFAR10 training curve](https://github.com/Wenlin-Chen/NumLayers/blob/master/logs/mlp_cifar10.png)<br><br>
 - cnn_mnist.py<br>
-![MLP for CIFAR10 training curve](https://github.com/Wenlin-Chen/NumLayers/blob/master/logs/cnn_mnist.png)
+![CNN for MNIST training curve](https://github.com/Wenlin-Chen/NumLayers/blob/master/logs/cnn_mnist.png)<br><br>
+- cnn_cifar10.py<br>
+![CNN for CIFAR10 training curve](https://github.com/Wenlin-Chen/NumLayers/blob/master/logs/cnn_cifar10.png)
