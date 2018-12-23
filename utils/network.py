@@ -1,11 +1,13 @@
-import time
 import matplotlib.pyplot as plt
 import numpy as np
 
 
 class Network(object):
 
-    def __init__(self, num_iter, batch_size, l2_reg=None):
+    def __init__(self, num_iter, batch_size, l2_reg=None, task='classification'):
+        self.task = task
+        if self.task != 'classification' and self.task != 'regression':
+            raise Exception('Unknown task (neither classification nor regression)')
         self.blocks = []
         self.num_blocks = 0
         self.num_iter = num_iter
@@ -14,6 +16,21 @@ class Network(object):
         self.l2_reg = l2_reg
         self.params = {}
         self.grads = {}
+        # recorder
+        self.val_iteration = []
+        self.test_iteration = []
+        self.loss_his = []
+        self.val_acc = []
+        self.test_acc = []
+        if task == 'classification':
+            self.best_val = 0
+            self.best_te = 0
+        else:
+            self.best_val = np.inf
+            self.best_te = np.inf
+
+        self.sum_loss = 0
+        self.sum_iter = 0
 
 
     def add_block(self, block):
@@ -65,116 +82,106 @@ class Network(object):
                 temp = block.score(input=temp)
         return acc
 
-    def train(self, optimizer, task='classification', print_freq=100):
-        if task != 'classification' and task != 'regression':
-            raise Exception('Unknown task (neither classification nor regression)')
+    def train(self, optimizer, step):
 
-        # recorder
-        val_iteration = []
-        test_iteration = []
-        loss_his = []
-        val_acc = []
-        test_acc = []
-        if task == 'classification':
-            best_val = 0
-            best_te = 0
+        # set all the gradients to be zero
+        self.zero_grad()
+
+        # forward
+        batches = np.random.choice(np.arange(self.x_tr.shape[0]), self.batch_size, replace=False)
+        x_batch, y_batch = self.x_tr[batches, :], self.y_tr[batches]
+        loss = self.forward(x_batch, y_batch)
+        self.sum_loss += loss
+        self.sum_iter += 1
+
+        # backward
+        self.backward()
+
+        # parameters update
+        optimizer.step(step)
+
+    def eval(self, step, split=1):
+        # split validation and test data into subsets
+        x_val, y_val = np.split(self.x_val, split), np.split(self.y_val, split)
+        x_te, y_te = np.split(self.x_te, split), np.split(self.y_te, split)
+
+        # print and record
+        self.val_iteration.append(step)
+        ave_loss = self.sum_loss / self.sum_iter
+        self.loss_his.append(ave_loss)
+        self.sum_loss = 0
+        self.sum_iter = 0
+        print('iteration:', step)
+        print('   training loss', ave_loss)
+
+        sum_acc = 0
+        for index in range(split):
+            sum_acc += self.score(x_val[index], y_val[index]) * x_val[index].shape[0]
+        acc = sum_acc / self.x_val.shape[0]
+        self.val_acc.append(acc)
+
+        if self.task == 'classification':
+            print('   validation accuracy:', acc)
         else:
-            best_val = np.inf
-            best_te = np.inf
+            print('   validation loss:', acc)
 
-        # loading optimizer
-        optimizer.load(self.params, self.grads)
+        if self.task == 'classification':
+            if acc > self.best_val or step == self.num_iter - 1:
+                self.test_iteration.append(step)
+                if acc > self.best_val:
+                    self.best_val = acc
+                sum_acc_te = 0
+                for index in range(split):
+                    sum_acc_te += self.score(x_te[index], y_te[index]) * x_te[index].shape[0]
+                acc_te = sum_acc_te / self.x_te.shape[0]
+                self.test_acc.append(acc_te)
+                print('   test accuracy:', acc_te)
+                if acc_te > self.best_te:
+                    self.best_te = acc_te
+        else:
+            if acc < self.best_val or step == self.num_iter - 1:
+                self.test_iteration.append(step)
+                if acc < self.best_val:
+                    self.best_val = acc
+                sum_acc_te = 0
+                for index in range(split):
+                    sum_acc_te += self.score(x_te[index], y_te[index])
+                acc_te = sum_acc_te / split
+                self.test_acc.append(acc_te)
+                print('   test loss:', acc_te)
+                if acc_te < self.best_te:
+                    self.best_te = acc_te
 
-        # training
-        sum_loss = 0
-        sum_iter = 0
-        t = time.time()
+        print()
 
-        for i in range(self.num_iter):
-            # set all the gradients to be zero
-            self.zero_grad()
-
-            # forward
-            batches = np.random.choice(np.arange(self.x_tr.shape[0]), self.batch_size, replace=False)
-            x_batch, y_batch = self.x_tr[batches, :], self.y_tr[batches]
-            loss = self.forward(x_batch, y_batch)
-            sum_loss += loss
-            sum_iter += 1
-
-            # backward
-            self.backward()
-
-            # parameters update
-            optimizer.step(i)
-
-            # print and record
-            if i % print_freq == 0 or i == self.num_iter - 1:
-                val_iteration.append(i)
-                ave_loss = sum_loss / sum_iter
-                loss_his.append(ave_loss)
-                sum_loss = 0
-                sum_iter = 0
-                print('iteration:', i)
-                print('   training loss', ave_loss)
-
-                acc = self.score(self.x_val, self.y_val)
-                val_acc.append(acc)
-
-                if task == 'classification':
-                    print('   validation accuracy:', acc)
-                else:
-                    print('   validation loss:', acc)
-
-                if task == 'classification':
-                    if acc > best_val or i == self.num_iter - 1:
-                        test_iteration.append(i)
-                        if acc > best_val:
-                            best_val = acc
-                        acc_te = self.score(self.x_te, self.y_te)
-                        test_acc.append(acc_te)
-                        print('   test accuracy:', acc_te)
-                        if acc_te > best_te:
-                            best_te = acc_te
-
-                else:
-                    if acc < best_val or i == self.num_iter - 1:
-                        test_iteration.append(i)
-                        if acc < best_val:
-                            best_val = acc
-                        acc_te = self.score(self.x_te, self.y_te)
-                        test_acc.append(acc_te)
-                        print('   test loss:', acc_te)
-                        if acc_te < best_te:
-                            best_te = acc_te
-
-                print()
-
+    def plot(self, t):
+        # print result
         print('---------------------------------optimization complete---------------------------------')
-        if task == 'classification':
+        if self.task == 'classification':
             print('The optimization ran %fs, best validation accuracy %f with test accuracy %f'
-                  % ((time.time() - t), best_val, best_te))
+                  % (t, self.best_val, self.best_te))
         else:
             print('The optimization ran %fs, best validation loss %f with test loss %f'
-                  % ((time.time() - t), best_val, best_te))
+                  % (t, self.best_val, self.best_te))
 
         # plotting figure
         plt.subplot(1, 2, 1)
         plt.title('Loss')
         plt.xlabel('Iteration')
         plt.ylabel('Training Loss')
-        plt.plot(val_iteration[1:], loss_his[1:])
+        plt.plot(self.val_iteration[1:], self.loss_his[1:])
         plt.subplot(1, 2, 2)
         plt.xlabel('Iteration')
-        if task == 'classification':
+        if self.task == 'classification':
             plt.title('Accuracy')
             plt.ylabel('Validation/Test accuracy')
-            val_plot, = plt.plot(val_iteration[1:], val_acc[1:], label='Validation accuracy')
-            test_plot, = plt.plot(test_iteration[1:], test_acc[1:], label='Test accuracy')
+            val_plot, = plt.plot(self.val_iteration[1:], self.val_acc[1:], label='Validation accuracy')
+            test_plot, = plt.plot(self.test_iteration[1:], self.test_acc[1:], label='Test accuracy')
         else:
             plt.title('Loss')
             plt.ylabel('Validation/Test loss')
-            val_plot, = plt.plot(val_iteration[1:], val_acc[1:], label='Validation loss')
-            test_plot, = plt.plot(test_iteration[1:], test_acc[1:], label='Test loss')
+            val_plot, = plt.plot(self.val_iteration[1:], self.val_acc[1:], label='Validation loss')
+            test_plot, = plt.plot(self.test_iteration[1:], self.test_acc[1:], label='Test loss')
         plt.legend(handles=[val_plot, test_plot], loc='upper left')
         plt.show()
 
