@@ -19,28 +19,28 @@ Features
 ----
 Layers<br>
 - Linear<br>
-- Convolutional 2D<br>
+- Dropout<br>
 - Max Pooling 2D<br>
+- Convolutional 2D<br>
 - Batch Normalization 1D<br>
 - Batch Normalization 2D<br>
-- Dropout<br>
 
 Losses<br>
-- Cross Entropy Loss<br>
 - Hinge Loss<br>
-- Binary Cross Entropy Loss<br>
+- Cross Entropy Loss<br>
 - Mean Square Error Loss<br>
+- Binary Cross Entropy Loss<br>
 
 Activation Functions<br> 
 - ReLU<br>
-- Leaky ReLU<br>
 - Tanh<br>
 - Sigmoid<br>
+- Leaky ReLU<br>
 
 Optimizers<br>
-- Stochastic Gradient Descent<br>
-- Momentum<br>
 - Adam<br>
+- Momentum<br>
+- Stochastic Gradient Descent<br>
 
 Training Tools<br>
 - Learning Rate Decay<br>
@@ -59,4 +59,6 @@ Training Curves
 - mlp_mnist.py<br>
 ![MLP for MNIST training curve](https://github.com/Wenlin-Chen/NumLayers/blob/master/logs/mlp_mnist.png)<br><br>
 - mlp_cifar10.py<br>
-![MLP for CIFAR10 training curve](https://github.com/Wenlin-Chen/NumLayers/blob/master/logs/mlp_cifar10.png)
+![MLP for CIFAR10 training curve](https://github.com/Wenlin-Chen/NumLayers/blob/master/logs/mlp_cifar10.png)<br><br>
+- cnn_mnist.py<br>
+![MLP for CIFAR10 training curve](https://github.com/Wenlin-Chen/NumLayers/blob/master/logs/cnn_mnist.png)
