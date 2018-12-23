@@ -2,10 +2,10 @@ from blocks import layers, activations, losses
 from utils import load_data, network, optimizers
 
 # hyper-parameters
-learning_rate = 0.0003
-num_iter = 10000
+learning_rate = 0.001
+num_iter = 4000
 batch_size = 128
-l2_reg = 0.001
+l2_reg = 1e-5
 
 # network
 net = network.Network(num_iter=num_iter, batch_size=batch_size, l2_reg=l2_reg)

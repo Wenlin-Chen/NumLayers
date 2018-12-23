@@ -4,23 +4,26 @@ NumLayers
 A Deep Learning Library Written in NumPy
 ----
 - A personal project for fun and for the purpose of learning <br>
-- Version: 0.4.2 <br><br>
+- Version: 0.5.0 <br><br>
 - Author: Wenlin Chen <br>
 - E-mail: chen.wenlin@outlook.com <br><br>
-22nd December, 2018 <br><br>
+23rd December, 2018 <br><br>
 
 Requirements
 ----
 - Python 3.x<br>
 - NumPy<br>
-- Matplotlib<br><br>
+- Matplotlib<br>
 
 Features
 ----
 Layers<br>
 - Linear<br>
-- Dropout<br>
+- Convolutional 2D<br>
+- Max Pooling 2D<br>
 - Batch Normalization 1D<br>
+- Batch Normalization 2D<br>
+- Dropout<br>
 
 Losses<br>
 - Cross Entropy Loss<br>
