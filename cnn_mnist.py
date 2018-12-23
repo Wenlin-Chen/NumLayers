@@ -5,7 +5,7 @@ import time
 
 # hyper-parameters
 learning_rate = 0.001
-num_iter = 4000
+num_iter = 5000
 batch_size = 128
 l2_reg = 1e-5
 print_freq = 100
