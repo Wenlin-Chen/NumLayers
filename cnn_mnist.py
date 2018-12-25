@@ -1,15 +1,15 @@
 from blocks import layers, activations, losses
 from utils import load_data, network, optimizers
 from utils.transforms import *
-import time
 
 
 # hyper-parameters
-learning_rate = 0.001
-num_iter = 5000
+learning_rate = 0.1
+num_epoches = 15
 batch_size = 128
+lr_decay = [0.3, 8]
 l2_reg = 1e-5
-print_freq = 100
+eval_freq = 100
 
 # network
 net = network.Network(l2_reg=l2_reg)
@@ -31,7 +31,7 @@ net.add_block(layers.Linear(n_in=512, n_out=10))
 net.add_block(losses.CrossEntropyLoss())
 
 #optimizer
-optimizer = optimizers.Adam(learning_rate=learning_rate, betas=(0.9, 0.999))
+optimizer = optimizers.Momentum(learning_rate=learning_rate, momentum=0.9, Nesterov=True, lr_decay=lr_decay)
 optimizer.load(net.params, net.grads)
 
 # data and augmentation
@@ -41,9 +41,4 @@ train, val, test = load_data.load_mnist(train_transform, val_test_transform)
 net.load_data(train, val, test)
 
 # training
-t = time.time()
-for step in range(num_iter):
-    net.train_step(optimizer, step, batch_size)
-    if step % print_freq == 0 or step == num_iter - 1:
-        net.eval(step, num_iter, split=100)
-net.plot(time.time() - t)
+net.train(optimizer, num_epoches, batch_size, eval_freq)

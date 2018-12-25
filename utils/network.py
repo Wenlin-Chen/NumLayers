@@ -1,5 +1,7 @@
+from utils.split import split_minibatch
 import matplotlib.pyplot as plt
 import numpy as np
+import time
 
 
 class Network(object):
@@ -14,21 +16,19 @@ class Network(object):
         self.l2_reg = l2_reg
         self.params = {}
         self.grads = {}
-        # recorder
-        self.val_iteration = []
-        self.test_iteration = []
+
+        # recorders
+        self.epochs = []
         self.loss_his = []
-        self.val_acc = []
-        self.test_acc = []
+        self.train_score = []
+        self.val_score = []
+        self.test_score = []
+
+        self.best_val_epoch = 0
         if task == 'classification':
             self.best_val = 0
-            self.best_te = 0
         else:
             self.best_val = np.inf
-            self.best_te = np.inf
-
-        self.sum_loss = 0
-        self.sum_iter = 0
 
 
     def add_block(self, block):
@@ -80,107 +80,113 @@ class Network(object):
                 temp = block.score(input=temp)
         return acc
 
-    def train_step(self, optimizer, step, batch_size):
+    def train(self, optimizer, num_epoches, batch_size, eval_freq):
+        print('\nSocre = Accuracy for classification task / Raw Loss for regression task\n')
+        t = time.time()
 
-        # set all the gradients to be zero
-        self.zero_grad()
+        for epoch in range(num_epoches):
+            self.epochs.append(epoch)
 
-        # forward
-        batches = np.random.choice(np.arange(self.x_tr.shape[0]), batch_size, replace=False)
-        x_batch, y_batch = self.x_tr[batches, :], self.y_tr[batches]
-        loss = self.forward(x_batch, y_batch)
-        self.sum_loss += loss
-        self.sum_iter += 1
+            x_tr_batches, y_tr_batches = split_minibatch(self.x_tr, self.y_tr, batch_size, shuffle=True)
+            num_batches = len(x_tr_batches)
+            sum_loss = 0
+            for i in range(num_batches):
 
-        # backward
-        self.backward()
+                # set all the gradients to be zero
+                self.zero_grad()
+                # forward
+                loss = self.forward(x_tr_batches[i], y_tr_batches[i])
+                sum_loss += loss
+                # backward
+                self.backward()
+                # parameters update
+                optimizer.step(epoch)
 
-        # parameters update
-        optimizer.step(step)
+                # track
+                if (i + 1) == num_batches:
+                    ave_loss = sum_loss / (i + 1)
+                    self.track(i, num_batches, epoch, num_epoches, batch_size, ave_loss, record=True)
+                elif (i + 1) % eval_freq == 0:
+                    ave_loss = sum_loss / (i + 1)
+                    self.track(i, num_batches, epoch, num_epoches, batch_size, ave_loss, record=False)
 
-    def eval(self, step, num_iter, split=1):
-        # split validation and test data into subsets
-        x_val, y_val = np.split(self.x_val, split), np.split(self.y_val, split)
-        x_te, y_te = np.split(self.x_te, split), np.split(self.y_te, split)
+        self.plot(time.time() - t)
 
-        # print and record
-        self.val_iteration.append(step)
-        ave_loss = self.sum_loss / self.sum_iter
-        self.loss_his.append(ave_loss)
-        self.sum_loss = 0
-        self.sum_iter = 0
-        print('iteration:', step)
-        print('   training loss', ave_loss)
+    def eval(self, x, y, batch_size):
+        x_batches, y_batches = split_minibatch(x, y, batch_size, shuffle=False)
 
-        sum_acc = 0
-        for index in range(split):
-            sum_acc += self.score(x_val[index], y_val[index]) * x_val[index].shape[0]
-        acc = sum_acc / self.x_val.shape[0]
-        self.val_acc.append(acc)
+        sum_score = 0
+        for i in range(len(x_batches)):
+            sum_score += self.score(x_batches[i], y_batches[i]) * x_batches[i].shape[0]
+        return sum_score / x.shape[0]
 
-        if self.task == 'classification':
-            print('   validation accuracy:', acc)
-        else:
-            print('   validation loss:', acc)
+    def track(self, i, num_batches, epoch, num_epoches, batch_size, loss, record):
 
-        if self.task == 'classification':
-            if acc > self.best_val or step == num_iter - 1:
-                self.test_iteration.append(step)
-                if acc > self.best_val:
-                    self.best_val = acc
-                sum_acc_te = 0
-                for index in range(split):
-                    sum_acc_te += self.score(x_te[index], y_te[index]) * x_te[index].shape[0]
-                acc_te = sum_acc_te / self.x_te.shape[0]
-                self.test_acc.append(acc_te)
-                print('   test accuracy:', acc_te)
-                if acc_te > self.best_te:
-                    self.best_te = acc_te
-        else:
-            if acc < self.best_val or step == num_iter - 1:
-                self.test_iteration.append(step)
-                if acc < self.best_val:
-                    self.best_val = acc
-                sum_acc_te = 0
-                for index in range(split):
-                    sum_acc_te += self.score(x_te[index], y_te[index])
-                acc_te = sum_acc_te / split
-                self.test_acc.append(acc_te)
-                print('   test loss:', acc_te)
-                if acc_te < self.best_te:
-                    self.best_te = acc_te
+        print('Epoch[{0}/{1}], Iteration[{2}/{3}]'.format(epoch, num_epoches-1, i+1, num_batches))
+        print('    Training loss: {0}'.format(loss))
+
+        # evaluate validation set
+        val_score = self.eval(self.x_val, self.y_val, batch_size)
+        print('    Validation score: {0:.4f}'.format(val_score))
+
+        # evaluate test set
+        te_score = self.eval(self.x_te, self.y_te, batch_size)
+        print('    Test score: {0:.4f}'.format(te_score))
 
         print()
+
+        if record:
+            self.loss_his.append(loss)
+
+            # evaluate training set
+            tr_score = self.eval(self.x_tr, self.y_tr, batch_size)
+            print('    Training score: {0:.4f}'.format(tr_score))
+            print()
+
+            self.train_score.append(tr_score)
+            self.val_score.append(val_score)
+            self.test_score.append(te_score)
+
+            if self.task == 'classification':
+                if val_score > self.best_val:
+                    self.best_val = val_score
+                    self.best_val_epoch = epoch
+            else:
+                if val_score < self.best_val:
+                    self.best_val = val_score
+                    self.best_val_epoch = epoch
 
     def plot(self, t):
         # print result
         print('---------------------------------optimization complete---------------------------------')
-        if self.task == 'classification':
-            print('The optimization ran %fs, best validation accuracy %f with test accuracy %f'
-                  % (t, self.best_val, self.best_te))
-        else:
-            print('The optimization ran %fs, best validation loss %f with test loss %f'
-                  % (t, self.best_val, self.best_te))
+        print('The optimization ran {0}s, best validation score {1:.4f} with test score {2:.4f} at epoch {3}'
+              .format(t, self.best_val, self.test_score[self.best_val_epoch], self.best_val_epoch))
 
-        # plotting figure
-        plt.subplot(1, 2, 1)
+        # plot figure
+        plt.subplot(1, 3, 1)
         plt.title('Loss')
-        plt.xlabel('Iteration')
+        plt.xlabel('Epoch')
         plt.ylabel('Training Loss')
-        plt.plot(self.val_iteration[1:], self.loss_his[1:])
-        plt.subplot(1, 2, 2)
-        plt.xlabel('Iteration')
-        if self.task == 'classification':
-            plt.title('Accuracy')
-            plt.ylabel('Validation/Test accuracy')
-            val_plot, = plt.plot(self.val_iteration[1:], self.val_acc[1:], label='Validation accuracy')
-            test_plot, = plt.plot(self.test_iteration[1:], self.test_acc[1:], label='Test accuracy')
-        else:
-            plt.title('Loss')
-            plt.ylabel('Validation/Test loss')
-            val_plot, = plt.plot(self.val_iteration[1:], self.val_acc[1:], label='Validation loss')
-            test_plot, = plt.plot(self.test_iteration[1:], self.test_acc[1:], label='Test loss')
+        loss_plot, = plt.plot(self.epochs, self.loss_his)
+        plt.legend(handles=[loss_plot], loc='upper right')
+        plt.grid()
+
+        plt.subplot(1, 3, 2)
+        plt.xlabel('Epoch')
+        plt.title('Accuracy for classification / Raw Loss for regression')
+        plt.ylabel('Training score')
+        train_plot, = plt.plot(self.epochs, self.train_score, label='Training score')
+        plt.legend(handles=[train_plot], loc='upper left')
+        plt.grid()
+
+        plt.subplot(1, 3, 3)
+        plt.xlabel('Epoch')
+        plt.title('Accuracy for classification / Raw Loss for regression')
+        plt.ylabel('Validation/Test score')
+        val_plot, = plt.plot(self.epochs, self.val_score, label='Validation score')
+        test_plot, = plt.plot(self.epochs, self.test_score, label='Test score')
         plt.legend(handles=[val_plot, test_plot], loc='upper left')
+        plt.grid()
         plt.show()
 
     def load_data(self, train, val, test):

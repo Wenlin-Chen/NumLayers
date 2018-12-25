@@ -14,7 +14,7 @@ def load_mnist(train_transform, val_test_transfrom, root='./data/mnist'):
     train_data, val_data, test_data = train[0].reshape(-1, 1, 28, 28), val[0].reshape(-1, 1, 28, 28), \
                                       test[0].reshape(-1, 1, 28, 28)
     train_data, val_data, test_data = train_transform.transform(train_data), val_test_transfrom.transform(val_data), \
-                                      val_test_transfrom.transform(val_data)
+                                      val_test_transfrom.transform(test_data)
     train_labels, val_labels, test_labels = train[1], val[1], test[1]
 
     return (train_data, train_labels), (val_data, val_labels), (test_data, test_labels)

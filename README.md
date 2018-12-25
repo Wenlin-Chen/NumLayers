@@ -4,10 +4,9 @@ NumLayers
 A Deep Learning Library Written in NumPy
 ----
 - A personal project for fun and for the purpose of learning <br>
-- Version: 0.5.1 <br><br>
 - Author: Wenlin Chen <br>
 - E-mail: chen.wenlin@outlook.com <br><br>
-23rd December, 2018 <br><br>
+25th December, 2018 <br><br>
 
 Requirements
 ----
@@ -39,7 +38,7 @@ Activation Functions<br>
 
 Optimizers<br>
 - Adam<br>
-- Momentum<br>
+- Momentum and Nesterov<br>
 - Stochastic Gradient Descent<br>
 
 Training Tools<br>
