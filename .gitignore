@@ -1,6 +1,9 @@
 blocks/__pycache__/
 utils/__pycache__/
-utils/build/
-utils/im2col_cython.c
-utils/im2col_cython.cpython-36m-x86_64-linux-gnu.so
+utils/im2col/__pycache__/
+utils/im2col/build/
+utils/im2col/im2col_cython.c
+utils/im2col/im2col_cython.cpython-36m-x86_64-linux-gnu.so
+data/cifar10/cifar-10-batches-py/
+data/mnist/mnist.pkl.gz
 .idea/

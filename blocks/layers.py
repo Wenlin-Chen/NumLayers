@@ -1,9 +1,11 @@
 import numpy as np
 try:
-    from utils.im2col_cython import im2col_cython, col2im_cython
+    from utils.im2col.im2col_cython import im2col_cython, col2im_cython
 except ImportError:
-    print('run the following from the utils directory and try again:')
+    print('WARNING: Falied to enable Cython acceleration for Conv2d')
+    print('Please run the following command from the ./utils/im2col/ directory and try again:')
     print('python setup.py build_ext --inplace')
+    from utils.im2col.im2col import im2col, col2im
 
 
 class Linear(object):
@@ -77,7 +79,11 @@ class Conv2d(object):
         self.out_H = (self.in_H + 2 * self.padding - self.kernel_H) // self.stride + 1
         self.out_W = (self.in_W + 2 * self.padding - self.kernel_W) // self.stride + 1
 
-        self.cols = im2col_cython(self.input, self.kernel_H, self.kernel_W, self.padding, self.stride)
+        try:
+            self.cols = im2col_cython(self.input, self.kernel_H, self.kernel_W, self.padding, self.stride)
+        except:
+            self.cols = im2col(self.input, (self.kernel_H, self.kernel_W), self.padding, self.stride)
+
         output = np.dot(self.W[0].reshape(self.out_C, -1), self.cols) + self.b
         output = output.reshape(self.out_C, self.out_H, self.out_W, self.batch_size)
         output = np.transpose(output, (3, 0, 1, 2))
@@ -91,7 +97,11 @@ class Conv2d(object):
         out_H = (in_H + 2 * self.padding - self.kernel_H) // self.stride + 1
         out_W = (in_W + 2 * self.padding - self.kernel_W) // self.stride + 1
 
-        cols = im2col_cython(input, self.kernel_H, self.kernel_W, self.padding, self.stride)
+        try:
+            cols = im2col_cython(input, self.kernel_H, self.kernel_W, self.padding, self.stride)
+        except:
+            cols = im2col(input, (self.kernel_H, self.kernel_W), self.padding, self.stride)
+
         output = np.dot(self.W[0].reshape(self.out_C, -1), cols) + self.b
         output = output.reshape(self.out_C, out_H, out_W, batch_size)
         output = np.transpose(output, (3, 0, 1, 2))
@@ -107,9 +117,12 @@ class Conv2d(object):
             self.W_grad[0] = np.dot(grad_reshaped, self.cols.T).reshape(self.W[0].shape)
         dcols = np.dot(self.W[0].reshape(self.out_C, -1).T, grad_reshaped)
 
-        return col2im_cython(dcols, self.input.shape[0], self.input.shape[1], self.input.shape[2], self.input.shape[3],
-                             self.kernel_H, self.kernel_W, self.padding, self.stride)
-
+        try:
+            output = col2im_cython(dcols, self.input.shape[0], self.input.shape[1], self.input.shape[2],
+                                   self.input.shape[3], self.kernel_H, self.kernel_W, self.padding, self.stride)
+        except:
+            output = col2im(dcols, self.input.shape, (self.kernel_H, self.kernel_W), self.padding, self.stride)
+        return output
 
 class Dropout(object):
 

@@ -14,6 +14,18 @@ Requirements
 - NumPy<br>
 - Matplotlib<br><br>
 
+Getting Started
+----
+- Donwload MNIST dataset<br>
+http://deeplearning.net/data/mnist/mnist.pkl.gz <br>
+put the file *mnist.pkl.gz* in *./data/mnist/* <br><br>
+- Download CIFAR10 dataset<br> 
+https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz<br>
+extract it and put the folder *cifar-10-batches-py* in *./data/cifar10/*<br><br>
+- Enable Cython acceleration for Conv2d<br>
+Run the following command from the *./utils/im2col/* directory:<br>
+*python setup.py build_ext --inplace*<br><br>
+
 Features
 ----
 Layers<br>
@@ -45,14 +57,6 @@ Training Tools<br>
 - Data Augmentation<br>
 - Learning Rate Decay<br><br>
 
-
-Datasets
-----
-- MNIST<br>
-http://yann.lecun.com/exdb/mnist/ <br>
-- CIFAR10<br>
-https://www.cs.toronto.edu/~kriz/cifar.html <br><br>
-
 Training Curves
 ----
 - mlp_mnist.py<br>
@@ -62,4 +66,4 @@ Training Curves
 - cnn_mnist.py<br>
 ![CNN for MNIST training curve](https://github.com/Wenlin-Chen/NumLayers/blob/master/logs/cnn_mnist.png)<br><br>
 - cnn_cifar10.py<br>
-![CNN for CIFAR10 training curve](https://github.com/Wenlin-Chen/NumLayers/blob/master/logs/cnn_cifar10.png)
+![CNN for CIFAR10 training curve](https://github.com/Wenlin-Chen/NumLayers/blob/master/logs/cnn_cifar10.png)<br><br>
