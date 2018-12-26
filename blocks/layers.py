@@ -38,9 +38,9 @@ class Linear(object):
 
     def backward(self, grad):
         if self.l2_reg:
-            self.W_grad[0] = np.dot(self.input.T, grad) + self.l2_reg * self.W[0]
+            self.W_grad[0] += np.dot(self.input.T, grad) + self.l2_reg * self.W[0]
         else:
-            self.W_grad[0] = np.dot(self.input.T, grad)
+            self.W_grad[0] += np.dot(self.input.T, grad)
         self.b_grad[0] = np.sum(grad, axis=0)
 
         return np.dot(grad, self.W[0].T)
@@ -109,12 +109,12 @@ class Conv2d(object):
 
     def backward(self, grad):
         grad = grad.reshape(self.batch_size, self.out_C, self.out_H, self.out_W)
-        self.b_grad[0] = np.sum(grad, axis=(0, 2, 3)).reshape(-1, 1)
+        self.b_grad[0] += np.sum(grad, axis=(0, 2, 3)).reshape(-1, 1)
         grad_reshaped = np.transpose(grad, (1, 2, 3, 0)).reshape(self.out_C, -1)
         if self.l2_reg:
-            self.W_grad[0] = np.dot(grad_reshaped, self.cols.T).reshape(self.W[0].shape) + self.l2_reg * self.W[0]
+            self.W_grad[0] += np.dot(grad_reshaped, self.cols.T).reshape(self.W[0].shape) + self.l2_reg * self.W[0]
         else:
-            self.W_grad[0] = np.dot(grad_reshaped, self.cols.T).reshape(self.W[0].shape)
+            self.W_grad[0] += np.dot(grad_reshaped, self.cols.T).reshape(self.W[0].shape)
         dcols = np.dot(self.W[0].reshape(self.out_C, -1).T, grad_reshaped)
 
         try:
@@ -182,8 +182,8 @@ class BatchNorm1d(object):
         return self.gamma[0] * normalized + self.beta[0]
 
     def backward(self, grad):
-        self.beta_grad[0] = np.sum(grad, axis=0)
-        self.gamma_grad[0] = np.sum(grad * self.normalized, axis=0)
+        self.beta_grad[0] += np.sum(grad, axis=0)
+        self.gamma_grad[0] += np.sum(grad * self.normalized, axis=0)
 
         dnormalized = grad * self.gamma[0]
         dvar = np.sum(dnormalized * self.input_mu, axis=0) * (-0.5) * self.std_inv ** 3
@@ -240,8 +240,8 @@ class BatchNorm2d(object):
         grad = grad.reshape(self.ori_shape)
         grad = np.transpose(grad, (0, 2, 3 ,1)).reshape(-1, self.ori_shape[1])
 
-        self.beta_grad[0] = np.sum(grad, axis=0)
-        self.gamma_grad[0] = np.sum(grad * self.normalized, axis=0)
+        self.beta_grad[0] += np.sum(grad, axis=0)
+        self.gamma_grad[0] += np.sum(grad * self.normalized, axis=0)
 
         dnormalized = grad * self.gamma[0]
         dvar = np.sum(dnormalized * self.input_mu, axis=0) * (-0.5) * self.std_inv ** 3

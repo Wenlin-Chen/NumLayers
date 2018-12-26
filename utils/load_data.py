@@ -5,7 +5,7 @@ import sys
 import numpy as np
 
 
-def load_mnist(train_transform, val_test_transfrom, root='./data/mnist'):
+def load_mnist(train_transform, val_test_transfrom, root='../data/mnist'):
     f = gzip.open(os.path.join(root, 'mnist.pkl.gz'), 'rb')
     if sys.version_info[0] == 2:
         train, val, test = pickle.load(f)
@@ -19,7 +19,7 @@ def load_mnist(train_transform, val_test_transfrom, root='./data/mnist'):
 
     return (train_data, train_labels), (val_data, val_labels), (test_data, test_labels)
 
-def load_cifar10(train_transform, val_test_transfrom, root='./data/cifar10'):
+def load_cifar10(train_transform, val_test_transfrom, root='../data/cifar10'):
     # from torchvision.datasets.CIFAR10
     base_folder = 'cifar-10-batches-py'
 

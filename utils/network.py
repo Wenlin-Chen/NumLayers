@@ -54,21 +54,21 @@ class Network(object):
 
     def forward(self, x, labels):
         temp = x
-        loss = None
         for block in self.blocks:
             if block.block == 'loss':
-                loss = block.forward(input=temp, labels=labels)
+                temp = block.forward(input=temp, labels=labels)
             else:
                 temp = block.forward(input=temp)
-        return loss
+        return temp
 
-    def backward(self):
-        temp = None
+    def backward(self, grad=None):
+        temp = grad
         for block in reversed(self.blocks):
             if block.block == 'loss':
                 temp = block.backward()
             else:
                 temp = block.backward(grad=temp)
+        return temp
 
     def score(self, x, y):
         temp = x
@@ -92,7 +92,6 @@ class Network(object):
             num_batches = len(x_tr_batches)
             sum_loss = 0
             for i in range(num_batches):
-
                 # set all the gradients to be zero
                 self.zero_grad()
                 # forward
