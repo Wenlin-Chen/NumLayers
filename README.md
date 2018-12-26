@@ -16,12 +16,14 @@ Requirements
 
 Getting Started
 ----
-- Donwload MNIST dataset<br>
-http://deeplearning.net/data/mnist/mnist.pkl.gz <br>
-put the file *mnist.pkl.gz* in *./data/mnist/* <br><br>
-- Download CIFAR10 dataset<br> 
-https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz<br>
+- MNIST dataset<br>
+Download *http://deeplearning.net/data/mnist/mnist.pkl.gz* <br>
+and put it in *./data/mnist/* <br><br>
+
+- CIFAR10 dataset<br> 
+Dwonload *https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz* <br>
 extract it and put the folder *cifar-10-batches-py* in *./data/cifar10/*<br><br>
+
 - Enable Cython acceleration for Conv2d<br>
 Run the following command from the *./utils/im2col/* directory:<br>
 *python setup.py build_ext --inplace*<br><br>
