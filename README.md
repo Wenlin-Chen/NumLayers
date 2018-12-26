@@ -6,13 +6,13 @@ A Deep Learning Library Written in NumPy
 - A personal project for fun and for the purpose of learning <br>
 - Author: Wenlin Chen <br>
 - E-mail: chen.wenlin@outlook.com <br><br>
-25th December, 2018 <br><br>
+26th December, 2018 <br><br>
 
 Requirements
 ----
 - Python 3.x<br>
 - NumPy<br>
-- Matplotlib<br>
+- Matplotlib<br><br>
 
 Features
 ----
@@ -21,8 +21,7 @@ Layers<br>
 - Dropout<br>
 - Max Pooling 2D<br>
 - Convolutional 2D<br>
-- Batch Normalization 1D<br>
-- Batch Normalization 2D<br>
+- Batch Normalization 1D & 2D<br>
 
 Losses<br>
 - Hinge Loss<br>

@@ -28,9 +28,8 @@ net.add_block(losses.CrossEntropyLoss())
 
 # optimizer
 optimizer = optimizers.Momentum(learning_rate=learning_rate, momentum=0.9, Nesterov=True, lr_decay=lr_decay)
-optimizer.load(net.params, net.grads)
 
-# data and augmentation
+# data loading and augmentation
 train_transform = Transforms([ToTensor()])
 val_test_transform = Transforms([ToTensor()])
 train, val, test = load_data.load_cifar10(train_transform, val_test_transform)

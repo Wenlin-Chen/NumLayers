@@ -82,8 +82,9 @@ class Network(object):
 
     def train(self, optimizer, num_epoches, batch_size, eval_freq):
         print('\nSocre = Accuracy for classification task / Raw Loss for regression task\n')
-        t = time.time()
+        optimizer.load(self.params, self.grads)
 
+        t = time.time()
         for epoch in range(num_epoches):
             self.epochs.append(epoch)
 
@@ -114,14 +115,12 @@ class Network(object):
 
     def eval(self, x, y, batch_size):
         x_batches, y_batches = split_minibatch(x, y, batch_size, shuffle=False)
-
         sum_score = 0
         for i in range(len(x_batches)):
             sum_score += self.score(x_batches[i], y_batches[i]) * x_batches[i].shape[0]
         return sum_score / x.shape[0]
 
     def track(self, i, num_batches, epoch, num_epoches, batch_size, loss, record):
-
         print('Epoch[{0}/{1}], Iteration[{2}/{3}]'.format(epoch, num_epoches-1, i+1, num_batches))
         print('    Training loss: {0}'.format(loss))
 
@@ -157,12 +156,12 @@ class Network(object):
                     self.best_val_epoch = epoch
 
     def plot(self, t):
-        # print result
-        print('---------------------------------optimization complete---------------------------------')
+        # print results
+        print('---------------------------------optimization completed---------------------------------')
         print('The optimization ran {0}s, best validation score {1:.4f} with test score {2:.4f} at epoch {3}'
               .format(t, self.best_val, self.test_score[self.best_val_epoch], self.best_val_epoch))
 
-        # plot figure
+        # plot figures
         plt.subplot(1, 3, 1)
         plt.title('Loss')
         plt.xlabel('Epoch')

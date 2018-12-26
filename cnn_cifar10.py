@@ -30,11 +30,10 @@ net.add_block(layers.Dropout(keep_prob=0.5))
 net.add_block(layers.Linear(n_in=512, n_out=10))
 net.add_block(losses.CrossEntropyLoss())
 
-#optimizer
+# optimizer
 optimizer = optimizers.Momentum(learning_rate=learning_rate, momentum=0.9, Nesterov=True, lr_decay=lr_decay)
-optimizer.load(net.params, net.grads)
 
-# data and augmentation
+# data loading and augmentation
 mean = [x / 255 for x in [125.3, 123.0, 113.9]]
 std = [x / 255 for x in [63.0, 62.1, 66.7]]
 train_transform = Transforms([ToTensor(), Pad(4), RandomCrop(32), RandomHorizontalFlip(), Normalize(mean, std)])
