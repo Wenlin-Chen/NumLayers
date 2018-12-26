@@ -28,7 +28,7 @@ extract it and put the folder *cifar-10-batches-py* in *./data/cifar10/*<br>
 Run the following command from the *./utils/im2col/* directory:<br>
 *python setup.py build_ext --inplace*<br>
 
-- Run the example codes in *./models/*<br><br>
+- Run the example models in *./models/*<br><br>
 
 Features
 ----
