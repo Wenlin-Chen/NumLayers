@@ -35,8 +35,8 @@ Features
 Layers<br>
 - Linear<br>
 - Dropout<br>
+- Convolution 2D<br>
 - Max Pooling 2D<br>
-- Convolutional 2D<br>
 - Batch Normalization 1D & 2D<br>
 
 Losses<br>
