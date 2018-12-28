@@ -4,6 +4,7 @@ NumLayers
 A Deep Learning Library Written in NumPy
 ----
 - A personal project for fun and for the purpose of learning <br>
+- Deep Learning from scratch
 - Author: Wenlin Chen <br>
 - E-mail: chen.wenlin@outlook.com <br><br>
 26th December, 2018 <br><br>
@@ -16,52 +17,54 @@ Requirements
 
 Getting Started
 ----
-- MNIST dataset<br>
+- **MNIST dataset**<br>
 Download *http://deeplearning.net/data/mnist/mnist.pkl.gz* <br>
 and put it in *./data/mnist/* <br>
 
-- CIFAR10 dataset<br> 
+- **CIFAR10 dataset**<br> 
 Dwonload *https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz* <br>
 extract it and put the folder *cifar-10-batches-py* in *./data/cifar10/*<br>
 
-- Enable Cython acceleration for Conv2d<br>
+- **Cython acceleration for Conv2d (Optional, *im2col_cython.pyx* from Stanford CS231n)**<br>
 Run the following command from the *./utils/im2col/* directory:<br>
 *python setup.py build_ext --inplace*<br>
 
-- Run the example models in *./models/*<br><br>
+- **Run the example models in *./models/*<br>**
+Image Classification by MLP and CNN<br>
+Image Generation by GAN<br><br>
 
 Features
 ----
-Layers<br>
+**Layers**<br>
 - Linear<br>
 - Dropout<br>
 - Convolution 2D<br>
 - Max Pooling 2D<br>
 - Batch Normalization 1D & 2D<br>
 
-Losses<br>
+**Losses**<br>
 - Hinge Loss<br>
 - Cross Entropy Loss<br>
 - Mean Square Error Loss<br>
 - Binary Cross Entropy Loss<br>
 
-Activation Functions<br> 
+**Activation Functions**<br> 
 - Tanh<br>
 - ReLU<br>
 - Sigmoid<br>
 - Leaky ReLU<br>
 
-Optimizers<br>
+**Optimizers**<br>
 - Adam<br>
 - Momentum and Nesterov<br>
 - Stochastic Gradient Descent<br>
 
-Training Tools<br>
+**Training Tools**<br>
 - L2 Regularization<br>
 - Data Augmentation<br>
 - Learning Rate Decay<br><br>
 
-Training Curves
+Example Models
 ----
 - *./models/mlp_mnist.py*<br>
 ![MLP for MNIST training curve](https://github.com/Wenlin-Chen/NumLayers/blob/master/logs/mlp_mnist.png)<br><br>

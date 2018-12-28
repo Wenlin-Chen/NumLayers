@@ -59,7 +59,7 @@ class BCELoss(object):
         self.batch_size = input.shape[0]
 
         self.p =self.sigmoid(input)
-        loss = - np.sum(self.y * np.log(self.p + 1e-8) + (1 - self.y) * np.log(1 - self.p + 1e-8)) / self.batch_size
+        loss = - np.sum(np.log(self.y * self.p + (1 - self.y) * (1 - self.p) + 1e-8)) / self.batch_size
         if self.l2_reg:
             for key in self.params:
                 if key[0] == 'W':
