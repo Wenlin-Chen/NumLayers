@@ -26,7 +26,7 @@ class CrossEntropyLoss(object):
         if self.l2_reg:
             for key in self.params:
                 if key[0] == 'W':
-                    loss += 0.5 * self.l2_reg * np.linalg.norm(self.params[key][0])
+                    loss += 0.5 * self.l2_reg * np.linalg.norm(self.params[key][0])**2 / self.batch_size
         return loss
 
     def score(self, input, y):
@@ -63,7 +63,7 @@ class BCELoss(object):
         if self.l2_reg:
             for key in self.params:
                 if key[0] == 'W':
-                    loss += 0.5 * self.l2_reg * np.linalg.norm(self.params[key][0])
+                    loss += 0.5 * self.l2_reg * np.linalg.norm(self.params[key][0])**2 / self.batch_size
         return loss
 
     def score(self, input, y):
@@ -98,7 +98,7 @@ class HingeLoss(object):
         if self.l2_reg:
             for key in self.params:
                 if key[0] == 'W':
-                    loss += 0.5 * self.l2_reg * np.linalg.norm(self.params[key][0])
+                    loss += 0.5 * self.l2_reg * np.linalg.norm(self.params[key][0])**2 / self.batch_size
         return loss
 
     def score(self, input, y):
@@ -132,7 +132,7 @@ class MSELoss(object):
         if self.l2_reg:
             for key in self.params:
                 if key[0] == 'W':
-                    loss += 0.5 * self.l2_reg * np.linalg.norm(self.params[key][0])
+                    loss += 0.5 * self.l2_reg * np.linalg.norm(self.params[key][0]) ** 2 / self.batch_size
         return loss
 
     def score(self, input, y):
