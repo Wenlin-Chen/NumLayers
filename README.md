@@ -7,7 +7,7 @@ A Deep Learning Library Written in NumPy
 - Deep Learning from scratch
 - Author: Wenlin Chen <br>
 - E-mail: chen.wenlin@outlook.com <br><br>
-28th December, 2018 <br><br>
+31st December, 2018 <br><br>
 
 Requirements
 ----
@@ -56,6 +56,7 @@ Features
 
 **Optimizers**<br>
 - Adam<br>
+- RMSprop<br>
 - Momentum and Nesterov<br>
 - Stochastic Gradient Descent<br>
 
