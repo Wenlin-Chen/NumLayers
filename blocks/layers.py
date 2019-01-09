@@ -41,7 +41,7 @@ class Linear(object):
             self.W_grad[0] += np.dot(self.input.T, grad) + self.l2_reg * self.W[0]
         else:
             self.W_grad[0] += np.dot(self.input.T, grad)
-        self.b_grad[0] = np.sum(grad, axis=0)
+        self.b_grad[0] += np.sum(grad, axis=0)
 
         return np.dot(grad, self.W[0].T)
 
