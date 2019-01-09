@@ -128,7 +128,7 @@ class MSELoss(object):
         self.input = input
         self.batch_size = self.input.shape[0]
         self.y = labels.reshape(self.batch_size, -1)
-        loss = 0.5 * np.linalg.norm(input - self.y) / self.batch_size
+        loss = 0.5 * np.linalg.norm(input - self.y) ** 2 / self.batch_size
         if self.l2_reg:
             for key in self.params:
                 if key[0] == 'W':
@@ -138,7 +138,7 @@ class MSELoss(object):
     def score(self, input, y):
         batch_size = input.shape[0]
         y = y.reshape(batch_size, -1)
-        return 0.5 * np.linalg.norm(input - y) / batch_size
+        return 0.5 * np.linalg.norm(input - y) ** 2 / batch_size
 
     def backward(self):
         return (self.input - self.y) / self.batch_size
