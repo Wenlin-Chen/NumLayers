@@ -1,13 +1,10 @@
 NumLayers
 ====
 
-A Deep Learning Library Written in NumPy
+A Deep Learning Library Written in NumPy (from scratch)
 ----
 - A personal project for fun and for the purpose of learning <br>
-- Deep Learning from scratch
 - Author: Wenlin Chen <br>
-- E-mail: chen.wenlin@outlook.com <br><br>
-31st December, 2018 <br><br>
 
 Requirements
 ----
@@ -25,12 +22,12 @@ and put it in *./data/mnist/* <br>
 Dwonload *https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz* <br>
 extract it and put the folder *cifar-10-batches-py* in *./data/cifar10/*<br>
 
-- **Cython acceleration for Conv2d (Optional, *im2col_cython.pyx* from Stanford CS231n)**<br>
+- **Cython acceleration for Conv2d and MaxPool2d (Optional, *im2col_cython.pyx* from Stanford CS231n)**<br>
 Run the following command from the *./utils/im2col/* directory:<br>
 *python setup.py build_ext --inplace*<br>
 
 - **Run the example models in *./models/*<br>**
-Image Classification by MLP and CNN<br>
+Image Recognition by MLP and CNN<br>
 Image Generation by GAN<br><br>
 
 Features
